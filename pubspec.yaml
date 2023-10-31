@@ -18,6 +18,8 @@ dev_dependencies:
   flutter_test: 
     sdk: flutter
 
-flutter: 
+flutter:
+  assets: 
+    - assets/images/iconLogin.png  
   uses-material-design: true
 
