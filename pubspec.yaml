@@ -8,8 +8,9 @@ environment:
 dependencies: 
   cupertino_icons: ^1.0.2
   get: 4.6.6
-  firebase_core: 2.20.0
+  firebase_core: 2.21.0
   firebase_auth: 4.12.0
+  cloud_firestore: 4.12.2
   flutter: 
     sdk: flutter
 
@@ -18,8 +19,10 @@ dev_dependencies:
   flutter_test: 
     sdk: flutter
 
-flutter:
+flutter: 
   assets: 
-    - assets/images/iconLogin.png  
+    - assets/images/iconLogin.png
+    - assets/images/bgProfile.png
+    - assets/images/avatar.png
   uses-material-design: true
 

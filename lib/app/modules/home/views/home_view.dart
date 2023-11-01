@@ -18,52 +18,52 @@ class HomeView extends GetView<HomeController> {
     color: Colors.white,
     fontWeight: FontWeight.w500,
     fontSize: 12,
-  );
+  );  
 
-  buildBottomNavigationMenu(context, HomeController) {
-    return Obx(
-      () => MediaQuery(
-        data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-        child: SizedBox(
-          height: 54,
-          child: BottomNavigationBar(
-            showUnselectedLabels: true,
-            showSelectedLabels: true,
-            onTap: controller.changeTabIndex,
-            currentIndex: controller.tabIndex.value,
-            backgroundColor: Colors.white,
-            unselectedItemColor: Colors.grey,
-            selectedItemColor: Color(0xff8332A6),
-            unselectedLabelStyle: unselectedLabelStyle,
-            selectedLabelStyle: selectedLabelStyle,
-            items: [
-              BottomNavigationBarItem(
-                icon: Container(
-                  margin: EdgeInsets.only(bottom: 7),
-                  child: Icon(Icons.home, size: 20.0),
-                ),
-                label: 'Home',
-                backgroundColor: Colors.white,
-              ),
-              BottomNavigationBarItem(
-                icon: Container(
-                  margin: EdgeInsets.only(bottom: 7),
-                  child: Icon(Icons.person, size: 20.0),
-                ),
-                label: 'Profile',
-                backgroundColor: Colors.white,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // buildBottomNavigationMenu(context, HomeController) {
+  //   return Obx(
+  //     () => MediaQuery(
+  //       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+  //       child: SizedBox(
+  //         height: 54,
+  //         child: BottomNavigationBar(
+  //           showUnselectedLabels: true,
+  //           showSelectedLabels: true,
+  //           onTap: controller.changeTabIndex,
+  //           currentIndex: controller.tabIndex.value,
+  //           backgroundColor: Colors.white,
+  //           unselectedItemColor: Colors.grey,
+  //           selectedItemColor: Color(0xff8332A6),
+  //           unselectedLabelStyle: unselectedLabelStyle,
+  //           selectedLabelStyle: selectedLabelStyle,
+  //           items: [
+  //             BottomNavigationBarItem(
+  //               icon: Container(
+  //                 margin: EdgeInsets.only(bottom: 7),
+  //                 child: Icon(Icons.home, size: 20.0),
+  //               ),
+  //               label: 'Home',
+  //               backgroundColor: Colors.white,
+  //             ),
+  //             BottomNavigationBarItem(
+  //               icon: Container(
+  //                 margin: EdgeInsets.only(bottom: 7),
+  //                 child: Icon(Icons.person, size: 20.0),
+  //               ),
+  //               label: 'Profile',
+  //               backgroundColor: Colors.white,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: buildBottomNavigationMenu(context, controller),
+      // bottomNavigationBar: buildBottomNavigationMenu(context, controller),
       appBar: AppBar(
         title: const Text('HomeView'),
         actions: [
@@ -74,21 +74,22 @@ class HomeView extends GetView<HomeController> {
         ],
         centerTitle: true,
       ),
-      body: Obx(
-        () => Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xffBF2C98), Color(0xff8332A6)],
-              begin: Alignment.topCenter,
-              end: AlignmentDirectional.bottomCenter,
-            ),
-          ),
-          child: IndexedStack(
-            index: controller.tabIndex.value,
-            children: [HomeView(), ProfileView()],
-          ),
-        ),
-      ),
+      body: Text('homeView')
+      // Obx(
+      //   () => Container(
+      //     decoration: BoxDecoration(
+      //       gradient: LinearGradient(
+      //         colors: [Color(0xffBF2C98), Color(0xff8332A6)],
+      //         begin: Alignment.topCenter,
+      //         end: AlignmentDirectional.bottomCenter,
+      //       ),
+      //     ),
+      //     child: IndexedStack(
+      //       index: controller.tabIndex.value,
+      //       children: [HomeView(), ProfileView()],
+      //     ),
+      //   ),
+      // ),
     );
   }
 }
