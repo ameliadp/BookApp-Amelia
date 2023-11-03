@@ -191,6 +191,24 @@ class HomeView extends GetView<HomeController> {
                                           fontWeight: FontWeight.w100,
                                         ),
                                       ),
+                                      SizedBox(height: 17),
+                                      Text(
+                                        '50%',
+                                        style: TextStyle(
+                                            color: Color(0xffBF2C98),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w200),
+                                      ),
+                                      SizedBox(height: 5),
+                                      LinearProgressIndicator(
+                                        value: 0.5,
+                                        backgroundColor: Color(0xffedebeb),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Color(0xff7C39BF)),
+                                        minHeight: 10,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -245,6 +263,7 @@ class HomeView extends GetView<HomeController> {
                   ],
                 ),
                 SizedBox(height: 8),
+                //RECENT ACTIVITY
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
@@ -252,63 +271,90 @@ class HomeView extends GetView<HomeController> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   width: double.infinity,
-                  height: 600,
+                  height: 700,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 20, left: 20),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 15, top: 15, bottom: 15),
                         child: Text(
                           'Recent Activity',
                           style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
                       ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        itemCount: 10,
-                        itemBuilder: (context, index) {
-                          Color backgroundColor = index.isEven
-                              ? Color(0xfffcedf9)
-                              : Color(0xfff5daee);
-                          return Container(
-                            width: double.infinity,
-                            height: 50,
-                            color: backgroundColor,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8),
-                                  child: Image.asset(
-                                    'assets/images/iconBox.png',
-                                    width: 50,
-                                    height: 50,
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                      Expanded(
+                        child: Container(
+                          child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: 20,
+                            itemBuilder: (BuildContext context, int index) {
+                              Color backgroundColor = index % 2 == 0
+                                  ? Color(0xfffcedf9)
+                                  : Color(0xfff5daee);
+                              return Container(
+                                width: double.infinity,
+                                height: 50,
+                                color: backgroundColor,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'Book Name',
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 16),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Image.asset(
+                                        'assets/images/iconBox.png',
+                                        width: 50,
+                                        height: 50,
+                                      ),
                                     ),
-                                    Text(
-                                      'Tue, 23 Oct 2023, 12/25',
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 14),
+                                    SizedBox(width: 10),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Book Name',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16),
+                                        ),
+                                        Text(
+                                          'Tue, 23 Oct 2023, 12/25',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14),
+                                        ),
+                                      ],
                                     ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 88),
+                                      child: Container(
+                                        width: 50,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffBF2C98),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '1-20',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15),
+                                          ),
+                                        ),
+                                      ),
+                                    )
                                   ],
-                                )
-                              ],
-                            ),
-                          );
-                        },
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ],
                   ),
