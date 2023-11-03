@@ -1,10 +1,18 @@
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  var tabIndex = 0.obs;
+  var overlayVisible = List.generate(4, (index) => false).obs;
 
-  void changeTabIndex(int index) {
-    tabIndex.value = index;
+  void showOverlay(int index) {
+    overlayVisible[index] = true;
+  }
+
+   void hideOverlay(int index) {
+    overlayVisible[index] = false;
+  }
+
+  bool isOverlayVisible(int index) {
+    return overlayVisible[index];
   }
 
   final count = 0.obs;

@@ -30,8 +30,10 @@
 
     late Rx<User?> firebaseUser; 
 
-    TextEditingController emailC = TextEditingController();
+    TextEditingController nameC = TextEditingController();
     TextEditingController passC = TextEditingController();
+    TextEditingController emailC = TextEditingController();
+    TextEditingController birthDateC = TextEditingController();
 
     void login(String email, String password) async {
       try {
@@ -42,11 +44,17 @@
           print('No user found for that email');
         } else if (e.code == 'wrong-password') {
           print('Wrong password provided for that user');
+        } else {
+          print(e.toString());
         }
+      } catch (e) {
+        print(e.toString());
       }
     }
 
-    void signup() {}
+    void signup() {
+      
+    }
     void logout() async {
       await FirebaseAuth.instance.signOut();
       Get.offAndToNamed(Routes.LOGIN);

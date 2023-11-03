@@ -1,3 +1,4 @@
+import 'package:firebase_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -5,7 +6,8 @@ import 'package:get/get.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
-  const LoginView({Key? key}) : super(key: key);
+  GlobalKey<FormState> form = GlobalKey();
+  LoginView({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,14 +19,11 @@ class LoginView extends GetView<LoginController> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 100),
-                  child: Image.asset(
-                    'assets/images/iconLogin.png',
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.contain,
-                  ),
+                child: Image.asset(
+                  'assets/images/iconLogin.png',
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.contain,
                 ),
               ),
               SizedBox(height: 10),
@@ -37,99 +36,206 @@ class LoginView extends GetView<LoginController> {
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                   child: Container(
-                    margin: EdgeInsets.only(
-                        left: 20, right: 20, bottom: 20, top: 10),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 8, right: 8, top: 8),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.person,
-                                color: Color(0xff8332A6),
-                              ),
-                              SizedBox(width: 10),
-                              SizedBox(
-                                height: 60,
-                                width: 220,
-                                child: TextFormField(
-                                  controller: controller.emailC,
-                                  autocorrect: false,
-                                  keyboardType: TextInputType.emailAddress,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: 'Email',
-                                    labelStyle:
-                                        TextStyle(color: Color(0xff8332A6)),
-                                    border: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Color(0xff8332A6)),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Color(0xff8332A6)),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Color(0xff8332A6)),
+                    margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                    child: Form(
+                      key: form,
+                      child: Column(
+                        children: [
+                          if (controller.isRegis)
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 8, right: 8, top: 5),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.person,
+                                    color: Color(0xff8332A6),
+                                  ),
+                                  SizedBox(width: 10),
+                                  SizedBox(
+                                    height: 60,
+                                    width: 220,
+                                    child: TextFormField(
+                                      controller: controller.nameC,
+                                      autocorrect: false,
+                                      keyboardType: TextInputType.name,
+                                      textInputAction: TextInputAction.next,
+                                      decoration: InputDecoration(
+                                        labelText: 'Username',
+                                        labelStyle:
+                                            TextStyle(color: Color(0xff8332A6)),
+                                        border: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xff8332A6)),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xff8332A6)),
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xff8332A6)),
+                                        ),
+                                      ),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Username wajib diisi';
+                                        }
+                                        return null;
+                                      },
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: 8, right: 8, top: 8, bottom: 5),
-                          child: Row(
-                            children: [
-                              Icon(Icons.lock_outline,
-                                  color: Color(0xff8332A6)),
-                              SizedBox(width: 10),
-                              SizedBox(
-                                height: 60,
-                                width: 220,
-                                child: TextFormField(
-                                  autocorrect: false,
-                                  controller: controller.passC,
-                                  // obscureText:controller.isPasswordHidden.value
-                                  textInputAction: TextInputAction.done,
-                                  decoration: InputDecoration(
-                                    labelText: 'Password',
-                                    labelStyle:
-                                        TextStyle(color: Color(0xff8332A6)),
-                                    // suffixIcon: IconButton(
-                                    //   onPressed: () {
-                                    //     controller.togglePasswordVisibility();
-                                    //   },
-                                    //   icon: Icon(
-                                    //     controller.isPasswordHidden.value
-                                    //         ? Icons.visibility_off
-                                    //         : Icons.visibility,
-                                    //     color: Color(0xff8332A6),
-                                    //   ),
-                                    // ),
-                                    border: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Color(0xff8332A6)),
+                            ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 8, right: 8, top: 7),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.email,
+                                  color: Color(0xff8332A6),
+                                ),
+                                SizedBox(width: 10),
+                                SizedBox(
+                                  height: 60,
+                                  width: 220,
+                                  child: TextFormField(
+                                    controller: controller.emailC,
+                                    autocorrect: false,
+                                    keyboardType: TextInputType.emailAddress,
+                                    textInputAction: TextInputAction.next,
+                                    decoration: InputDecoration(
+                                      labelText: 'Email',
+                                      labelStyle:
+                                          TextStyle(color: Color(0xff8332A6)),
+                                      border: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xff8332A6)),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xff8332A6)),
+                                      ),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xff8332A6)),
+                                      ),
                                     ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Color(0xff8332A6)),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Color(0xff8332A6)),
-                                    ),
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Harap isi email Anda';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: EdgeInsets.only(left: 8, right: 8, top: 7),
+                            child: Row(
+                              children: [
+                                Icon(Icons.lock_outline,
+                                    color: Color(0xff8332A6)),
+                                SizedBox(width: 10),
+                                SizedBox(
+                                  height: 60,
+                                  width: 220,
+                                  child: TextFormField(
+                                    autocorrect: false,
+                                    controller: controller.passC,
+                                    // obscureText:controller.isPasswordHidden.value
+                                    textInputAction: TextInputAction.done,
+                                    decoration: InputDecoration(
+                                      labelText: 'Password',
+                                      labelStyle:
+                                          TextStyle(color: Color(0xff8332A6)),
+                                      // suffixIcon: IconButton(
+                                      //   onPressed: () {
+                                      //     controller.togglePasswordVisibility();
+                                      //   },
+                                      //   icon: Icon(
+                                      //     controller.isPasswordHidden.value
+                                      //         ? Icons.visibility_off
+                                      //         : Icons.visibility,
+                                      //     color: Color(0xff8332A6),
+                                      //   ),
+                                      // ),
+                                      border: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xff8332A6)),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xff8332A6)),
+                                      ),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xff8332A6)),
+                                      ),
+                                    ),
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Harap isi password Anda';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (controller.isRegis)
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: 8, right: 8, top: 8, bottom: 5),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.calendar_today,
+                                    color: Color(0xff8332A6),
+                                  ),
+                                  SizedBox(width: 10),
+                                  SizedBox(
+                                    height: 60,
+                                    width: 220,
+                                    child: TextFormField(
+                                      controller: controller.birthDateC,
+                                      autocorrect: false,
+                                      keyboardType: TextInputType.datetime,
+                                      textInputAction: TextInputAction.done,
+                                      decoration: InputDecoration(
+                                        labelText: 'Birth Date',
+                                        labelStyle:
+                                            TextStyle(color: Color(0xff8332A6)),
+                                        border: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xff8332A6)),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xff8332A6)),
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xff8332A6)),
+                                        ),
+                                      ),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Harap isi tanggal lahir Anda';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -159,7 +265,10 @@ class LoginView extends GetView<LoginController> {
               Align(
                 alignment: Alignment.center,
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    controller.isRegis = true;
+                    Get.toNamed(Routes.LOGIN);
+                  },
                   child: Padding(
                     padding: const EdgeInsets.only(top: 15),
                     child: Text(

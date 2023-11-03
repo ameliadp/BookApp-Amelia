@@ -1,7 +1,10 @@
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 
 class FormController extends GetxController {
-  //TODO: Implement FormController
+  TextEditingController titleC = TextEditingController();
+  TextEditingController categoryC = TextEditingController();
+  TextEditingController pageC = TextEditingController();
 
   final count = 0.obs;
   @override

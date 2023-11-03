@@ -1,3 +1,4 @@
+import 'package:firebase_app/app/addition/bottomnav.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -29,7 +30,7 @@ class ProfileView extends GetView<ProfileController> {
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 25, top: 30),
+                  padding: const EdgeInsets.only(left: 20, top: 30),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -60,7 +61,7 @@ class ProfileView extends GetView<ProfileController> {
                       ),
                       SizedBox(width: 10),
                       Padding(
-                        padding: const EdgeInsets.only(left: 110),
+                        padding: const EdgeInsets.only(left: 85),
                         child: InkWell(
                           onTap: () {},
                           child: Container(
@@ -97,7 +98,7 @@ class ProfileView extends GetView<ProfileController> {
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black,
-                              blurRadius: 5,
+                              blurRadius: 8,
                               offset: Offset(0, 3),
                             ),
                           ],
@@ -133,7 +134,7 @@ class ProfileView extends GetView<ProfileController> {
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black,
-                              blurRadius: 5,
+                              blurRadius: 8,
                               offset: Offset(0, 3),
                             ),
                           ],
@@ -167,6 +168,7 @@ class ProfileView extends GetView<ProfileController> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNav(initialindex: 1),
     );
   }
 }
