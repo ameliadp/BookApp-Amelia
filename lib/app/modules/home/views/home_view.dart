@@ -9,14 +9,90 @@ import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
+  GlobalKey<FormState> formKey = GlobalKey();
   final authC = Get.find<LoginController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //BUTTON ADD
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.toNamed(Routes.FORM);
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  title: Center(
+                    child: Text(
+                      'Reading Form',
+                      style: TextStyle(color: Color(0xff8332A6)),
+                    ),
+                  ),
+                  content: Form(
+                    key: formKey,
+                    autovalidateMode: AutovalidateMode.always,
+                    child: Container(
+                      width: 800,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          _buildTextFieldOne('Select Book', controller),
+                          _buildTextFieldTwo('Previous Read Page', controller),
+                          _buildTextFieldThree('Newest Read Page', controller),
+                        ],
+                      ),
+                    ),
+                  ),
+                  actions: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 10, right: 10, bottom: 10),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 5,
+                              shadowColor: Colors.grey,
+                              backgroundColor: Color(0xff8332A6),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              minimumSize: Size(100, 40), // Atur ukuran tombol
+                            ),
+                            onPressed: () {
+                              formKey.currentState?.validate() == true;
+                            },
+                            child: Text('Submit'),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 10, right: 10, bottom: 10),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 5,
+                              shadowColor: Colors.grey,
+                              backgroundColor: Color(0xff8332A6),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              minimumSize: Size(100, 40), // Atur ukuran tombol
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Cancel'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              });
         },
         child: Icon(Icons.add),
         backgroundColor: Color(0xff8332A6),
@@ -24,6 +100,7 @@ class HomeView extends GetView<HomeController> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: Stack(
         children: [
+          //BACKGROUND COLOR
           Container(
             constraints:
                 BoxConstraints(minHeight: MediaQuery.of(context).size.height),
@@ -38,64 +115,63 @@ class HomeView extends GetView<HomeController> {
           SingleChildScrollView(
             child: Column(
               children: [
+                //AVATAR & USERNAME
                 Padding(
                   padding: const EdgeInsets.only(left: 25, top: 30),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 30,
-                        backgroundImage: AssetImage('assets/images/avatar.png'),
-                      ),
-                      SizedBox(width: 10),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 15),
+                          CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 30,
+                            backgroundImage:
+                                AssetImage('assets/images/avatar.png'),
                           ),
-                          Text(
-                            'Hai...',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w200,
-                                fontSize: 22),
-                          ),
-                          Text(
-                            'Username',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w100,
-                                fontSize: 16),
+                          SizedBox(width: 10),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Hai...',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w200,
+                                    fontSize: 22),
+                              ),
+                              Text(
+                                'Username',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w100,
+                                    fontSize: 16),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      SizedBox(width: 10),
-                      Padding(
-                        padding: EdgeInsets.only(top: 12, left: 110),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          width: 85,
-                          height: 85,
-                          child: Center(
-                            child: Icon(
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(
                               Icons.notifications_none,
                               color: Colors.white,
                               size: 30,
                             ),
                           ),
-                        ),
+                          SizedBox(width: 18),
+                        ],
                       ),
                     ],
                   ),
                 ),
+                SizedBox(height: 20),
+                //BOOK LIST
                 Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25),
+                  padding: const EdgeInsets.only(right: 15, left: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -107,160 +183,204 @@ class HomeView extends GetView<HomeController> {
                             fontWeight: FontWeight.w200),
                       ),
                       InkWell(
-                        onTap: () {},
-                        child: Container(
-                          width: 20,
-                          height: 20,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.transparent,
-                            border: Border.all(color: Colors.white, width: 2),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 15,
-                            ),
-                          ),
+                        onTap: () {
+                          Get.toNamed(Routes.FORM);
+                        },
+                        child: Icon(
+                          Icons.add_circle_outline_outlined,
+                          color: Colors.white,
+                          size: 25,
                         ),
                       ),
                     ],
                   ),
                 ),
                 SizedBox(height: 10),
-                Stack(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      height: 200,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 4,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                controller.showOverlay(index);
-                              },
-                              child: Container(
-                                width: 120,
-                                height: 100,
-                                margin: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.white,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Center(
-                                        child: Image.asset(
-                                          'assets/images/iconBox.png',
-                                          width: 80,
-                                          height: 60,
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        'Book Name',
-                                        style: TextStyle(
-                                          color: Color(0xffBF2C98),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Category',
-                                        style: TextStyle(
-                                          color: Color(0xffBF2C98),
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w100,
-                                        ),
-                                      ),
-                                      Text(
-                                        '125/250 page',
-                                        style: TextStyle(
-                                          color: Color(0xffBF2C98),
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w100,
-                                        ),
-                                      ),
-                                      SizedBox(height: 17),
-                                      Text(
-                                        '50%',
-                                        style: TextStyle(
-                                            color: Color(0xffBF2C98),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w200),
-                                      ),
-                                      SizedBox(height: 5),
-                                      LinearProgressIndicator(
-                                        value: 0.5,
-                                        backgroundColor: Color(0xffedebeb),
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Color(0xff7C39BF)),
-                                        minHeight: 10,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    IndexedStack(
-                      children: List.generate(4, (index) {
+                //LISTVIEW BUILDER >> HORIZONTAL
+                Container(
+                  width: double.infinity,
+                  height: 220,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
                         return Obx(() {
-                          return Visibility(
-                            visible: controller.isOverlayVisible(index),
-                            child: Container(
-                              color: Color(0xffaf84c2),
-                              child: Column(
-                                children: [
-                                  // Tombol close di pojok kanan atas
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        // Ketika tombol close diklik, sembunyikan overlay
-                                        controller.hideOverlay(index);
-                                      },
-                                      child: Icon(
-                                        Icons.close,
+                          return GestureDetector(
+                              onTap: () {
+                                controller.showOverlay.value = index;
+                              },
+                              child: controller.showOverlay.value == index
+                                  ? Container(
+                                      width: 125,
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Color(0xff8332A6).withOpacity(0.8),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          Center(
+                                            child: InkWell(
+                                              onTap: () {},
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.edit,
+                                                        color: Colors.white,
+                                                        size: 30,
+                                                      ),
+                                                      SizedBox(width: 10),
+                                                      Text(
+                                                        'Edit',
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.delete,
+                                                        color: Colors.white,
+                                                        size: 30,
+                                                      ),
+                                                      SizedBox(width: 10),
+                                                      Text(
+                                                        'Delete',
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20),
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            top: 10,
+                                            right: 10,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                controller.showOverlay.value =
+                                                    -1;
+                                              },
+                                              child: Container(
+                                                width: 20,
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: Colors.white,
+                                                    width: 1.0,
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.close_rounded,
+                                                    color: Colors.white,
+                                                    size: 15,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(
+                                      width: 125,
+                                      height: 200,
+                                      margin: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
                                         color: Colors.white,
                                       ),
-                                    ),
-                                  ),
-                                  // Konten overlay, termasuk ikon edit
-                                  Center(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        // Tambahkan logika edit di sini
-                                      },
-                                      child: Icon(
-                                        Icons.edit,
-                                        color: Colors.white,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Center(
+                                              child: Image.asset(
+                                                'assets/images/iconBox.png',
+                                                width: 80,
+                                                height: 60,
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+                                            Text(
+                                              'Book Name',
+                                              style: TextStyle(
+                                                color: Color(0xffBF2C98),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Category',
+                                              style: TextStyle(
+                                                color: Color(0xffBF2C98),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w100,
+                                              ),
+                                            ),
+                                            Text(
+                                              '125/250 page',
+                                              style: TextStyle(
+                                                color: Color(0xffBF2C98),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w100,
+                                              ),
+                                            ),
+                                            SizedBox(height: 15),
+                                            Text(
+                                              '50%',
+                                              style: TextStyle(
+                                                  color: Color(0xffBF2C98),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w200),
+                                            ),
+                                            SizedBox(height: 5),
+                                            LinearProgressIndicator(
+                                              value: 0.5,
+                                              backgroundColor:
+                                                  Color(0xffedebeb),
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      Color(0xff7C39BF)),
+                                              minHeight: 10,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
+                                    ));
                         });
-                      }),
-                    )
-                  ],
+                      },
+                    ),
+                  ),
                 ),
                 SizedBox(height: 8),
                 //RECENT ACTIVITY
@@ -286,14 +406,17 @@ class HomeView extends GetView<HomeController> {
                       ),
                       Expanded(
                         child: Container(
+                          height: 650,
                           child: ListView.builder(
+                            shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             itemCount: 20,
                             itemBuilder: (BuildContext context, int index) {
                               Color backgroundColor = index % 2 == 0
-                                  ? Color(0xfffcedf9)
-                                  : Color(0xfff5daee);
+                                  ? Color(0xffBF2C98).withOpacity(0.1)
+                                  : Color(0xffBF2C98).withOpacity(0.2);
                               return Container(
+                                margin: EdgeInsets.all(0),
                                 width: double.infinity,
                                 height: 50,
                                 color: backgroundColor,
@@ -374,4 +497,139 @@ class HomeView extends GetView<HomeController> {
       bottomNavigationBar: BottomNav(initialindex: 0),
     );
   }
+}
+
+Widget _buildTextFieldOne(String label, HomeController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(left: 3, right: 3, top: 5),
+    child: Row(
+      children: [
+        Icon(
+          Icons.book_rounded,
+          color: Color(0xff8332A6),
+        ),
+        SizedBox(width: 10),
+        SizedBox(
+          height: 60,
+          width: 180,
+          child: TextFormField(
+            controller: controller.bTitleC,
+            autocorrect: false,
+            keyboardType: TextInputType.text,
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 10, bottom: 5),
+              labelText: 'Select Book',
+              labelStyle: TextStyle(color: Color(0xff8332A6)),
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xff8332A6)),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xff8332A6)),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xff8332A6)),
+              ),
+            ),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Judul buku wajib diisi !';
+              }
+              return null;
+            },
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildTextFieldTwo(String label, HomeController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(left: 3, right: 3, top: 5),
+    child: Row(
+      children: [
+        Icon(
+          Icons.label,
+          color: Color(0xff8332A6),
+        ),
+        SizedBox(width: 10),
+        SizedBox(
+          height: 60,
+          width: 180,
+          child: TextFormField(
+            controller: controller.prevPR,
+            autocorrect: false,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 10, bottom: 5),
+              labelText: 'Previous Read Page',
+              labelStyle: TextStyle(color: Color(0xff8332A6)),
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xff8332A6)),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xff8332A6)),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xff8332A6)),
+              ),
+            ),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Form ini wajib diisi !';
+              }
+              return null;
+            },
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildTextFieldThree(String label, HomeController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(left: 3, right: 3, top: 5),
+    child: Row(
+      children: [
+        Icon(
+          Icons.label_important_outlined,
+          color: Color(0xff8332A6),
+        ),
+        SizedBox(width: 10),
+        SizedBox(
+          height: 60,
+          width: 180,
+          child: TextFormField(
+            controller: controller.newPR,
+            autocorrect: false,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 10, bottom: 5),
+              labelText: 'Newest Read Page',
+              labelStyle: TextStyle(color: Color(0xff8332A6)),
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xff8332A6)),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xff8332A6)),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xff8332A6)),
+              ),
+            ),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Form ini wajib diisi !';
+              }
+              return null;
+            },
+          ),
+        ),
+      ],
+    ),
+  );
 }

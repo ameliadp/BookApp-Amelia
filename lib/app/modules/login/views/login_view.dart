@@ -4,28 +4,29 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:get/get.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
-  GlobalKey<FormState> form = GlobalKey();
+  GlobalKey<FormState> formKey = GlobalKey();
   LoginView({super.key}) {
     initializeDateFormatting();
   }
 
-  Future<void> _selectedDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-    if (picked != null) {
-      final DateFormat formatter = DateFormat('E, dd MMMM yyyy', 'en');
-      String formattedDate = formatter.format(picked);
-      controller.birthDateC.text = formattedDate;
-    }
-  }
+  // Future<void> _selectedDate(BuildContext context) async {
+  //   final DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now(),
+  //     firstDate: DateTime(1900),
+  //     lastDate: DateTime.now(),
+  //   );
+  //   if (picked != null) {
+  //     final DateFormat formatter = DateFormat('E, dd MMMM yyyy', 'en');
+  //     String formattedDate = formatter.format(picked);
+  //     controller.birthDateC.text = formattedDate;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,8 @@ class LoginView extends GetView<LoginController> {
                     child: Container(
                       margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
                       child: Form(
-                        key: form,
+                        key: formKey,
+                        autovalidateMode: AutovalidateMode.always,
                         child: Column(
                           children: [
                             if (controller.isRegis)
@@ -81,6 +83,8 @@ class LoginView extends GetView<LoginController> {
                                         keyboardType: TextInputType.name,
                                         textInputAction: TextInputAction.next,
                                         decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.only(
+                                              top: 10, bottom: 5),
                                           labelText: 'Username',
                                           labelStyle: TextStyle(
                                               color: Color(0xff8332A6)),
@@ -127,6 +131,8 @@ class LoginView extends GetView<LoginController> {
                                       keyboardType: TextInputType.emailAddress,
                                       textInputAction: TextInputAction.next,
                                       decoration: InputDecoration(
+                                        contentPadding:
+                                            EdgeInsets.only(top: 10, bottom: 5),
                                         labelText: 'Email',
                                         labelStyle:
                                             TextStyle(color: Color(0xff8332A6)),
@@ -174,6 +180,8 @@ class LoginView extends GetView<LoginController> {
                                           controller.isPasswordHidden.value,
                                       textInputAction: TextInputAction.next,
                                       decoration: InputDecoration(
+                                        contentPadding:
+                                            EdgeInsets.only(top: 10, bottom: 5),
                                         labelText: 'Password',
                                         labelStyle:
                                             TextStyle(color: Color(0xff8332A6)),
@@ -206,6 +214,10 @@ class LoginView extends GetView<LoginController> {
                                         if (value!.isEmpty) {
                                           return 'Harap isi password Anda';
                                         }
+                                        if (controller.isRegis &&
+                                            value != controller.passC2.text) {
+                                          return 'Kata sandi tidak cocok';
+                                        }
                                         return null;
                                       },
                                     ),
@@ -233,6 +245,8 @@ class LoginView extends GetView<LoginController> {
                                           controller.isPasswordHidden.value,
                                       textInputAction: TextInputAction.next,
                                       decoration: InputDecoration(
+                                        contentPadding:
+                                            EdgeInsets.only(top: 10, bottom: 5),
                                         labelText: 'Confirm Password',
                                         labelStyle:
                                             TextStyle(color: Color(0xff8332A6)),
@@ -263,7 +277,11 @@ class LoginView extends GetView<LoginController> {
                                       ),
                                       validator: (value) {
                                         if (value!.isEmpty) {
-                                          return 'Harap isi password Anda';
+                                          return 'Harap konfirmasi password Anda';
+                                        }
+                                        if (controller.isRegis &&
+                                            value != controller.passC.text) {
+                                          return 'Kata sandi tidak cocok';
                                         }
                                         return null;
                                       },
@@ -291,10 +309,25 @@ class LoginView extends GetView<LoginController> {
                                         autocorrect: false,
                                         textInputAction: TextInputAction.done,
                                         readOnly: true,
-                                        onTap: () {
-                                          _selectedDate(context);
+                                        onTap: () async {
+                                          DateTime? selectedDate =
+                                              await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime.now(),
+                                          );
+                                          if (selectedDate != null) {
+                                            String formattedDate =
+                                                DateFormat('E, d MMMM y', 'en')
+                                                    .format(selectedDate);
+                                            controller.birthDateC.text =
+                                                formattedDate;
+                                          }
                                         },
                                         decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.only(
+                                              top: 10, bottom: 5),
                                           labelText: 'Birth Date',
                                           labelStyle: TextStyle(
                                               color: Color(0xff8332A6)),
@@ -385,10 +418,57 @@ class LoginView extends GetView<LoginController> {
                   padding: const EdgeInsets.only(top: 25, left: 10, right: 10),
                   child: ElevatedButton(
                     onPressed: () {
-                      if (form.currentState!.validate()) {
-                        controller.login(
-                            controller.emailC.text, controller.passC.text);
-                      } 
+                      if (formKey.currentState!.validate()) {
+                        if (controller.isRegis) {
+                          if (controller.isSaving) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      CircularProgressIndicator(),
+                                      15.height,
+                                      Text(
+                                        'Loading..',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          } else {
+                            controller.signup();
+                          }
+                        } else {
+                          if (controller.isSaving) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      CircularProgressIndicator(),
+                                      15.height,
+                                      Text(
+                                        'Loading..',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          } else {
+                            controller.login();
+                          }
+                        }
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       elevation: 8,

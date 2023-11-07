@@ -15,6 +15,7 @@ void main() async {
       options: FirebaseOptions(
           apiKey: 'AIzaSyDwGCrZ8PEBkiGbWSVjfkUMP-P0Dffs8cM',
           appId: '1:425187107882:android:1844416dbbc51e487d4f53',
+          storageBucket: 'bookapp-firebase-42764.appspot.com',
           messagingSenderId: '425187107882',
           projectId: 'bookapp-firebase-42764'));
 

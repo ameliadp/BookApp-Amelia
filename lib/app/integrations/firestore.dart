@@ -10,3 +10,5 @@ FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
 
 const usersCollection = "users";
+const bookCollection = "book";
+const readCollection = "read";

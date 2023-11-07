@@ -1,19 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  var overlayVisible = List.generate(4, (index) => false).obs;
+  final RxInt showOverlay = (-1).obs;
 
-  void showOverlay(int index) {
-    overlayVisible[index] = true;
-  }
-
-   void hideOverlay(int index) {
-    overlayVisible[index] = false;
-  }
-
-  bool isOverlayVisible(int index) {
-    return overlayVisible[index];
-  }
+  TextEditingController bTitleC = TextEditingController();
+  TextEditingController prevPR = TextEditingController();
+  TextEditingController newPR = TextEditingController();
 
   final count = 0.obs;
   @override

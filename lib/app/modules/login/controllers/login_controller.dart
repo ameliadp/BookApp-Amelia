@@ -1,16 +1,34 @@
-import 'package:firebase_app/app/addition/firestore.dart';
+import 'package:firebase_app/app/integrations/firestore.dart';
 import 'package:firebase_app/app/data/models/user_model.dart';
 import 'package:firebase_app/app/routes/app_pages.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:get/get.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class LoginController extends GetxController {
+  Rx<DateTime?> _selectedDate = DateTime(2000).obs;
+  DateTime? get selectedDate => _selectedDate.value;
+  set selectedDate(DateTime? value) => _selectedDate.value = value;
+
+  handleBirthDate(dynamic context) async {
+    selectedDate = await showDatePicker(
+            context: context,
+            initialDate: selectedDate ?? DateTime.now(),
+            initialDatePickerMode: DatePickerMode.year,
+            firstDate:
+                DateTime(selectedDate?.year ?? DateTime.now().year - 100),
+            lastDate: DateTime.now()) ??
+        selectedDate;
+  }
+
   RxBool isPasswordHidden = true.obs;
 
   void togglePasswordVisibility() {
     isPasswordHidden.value = !isPasswordHidden.value;
   }
+
   FirebaseAuth auth = FirebaseAuth.instance;
 
   Stream<User?> get streamAuthStatus => auth.authStateChanges();
@@ -45,16 +63,51 @@ class LoginController extends GetxController {
   TextEditingController emailC = TextEditingController();
   TextEditingController birthDateC = TextEditingController();
 
-  void login(String email, String password) async {
+  login() async {
     try {
-      await auth.signInWithEmailAndPassword(email: emailC.text, password: passC.text);
-      Get.offAndToNamed(Routes.HOME);
+      final myUser = await auth.signInWithEmailAndPassword(
+          email: emailC.text, password: passC.text);
+      if (myUser.user!.emailVerified) {
+        Get.offAndToNamed(Routes.HOME);
+      } else {
+        Get.defaultDialog(
+          title: 'Failed to Login',
+          middleText:
+              'Verify your email first, Does verification need to be resent?',
+          onConfirm: () async {
+            await myUser.user!.sendEmailVerification();
+            Get.back();
+            Get.snackbar(
+                'Success', 'Verification code has been sent to your email');
+          },
+          textConfirm: 'Yes',
+          textCancel: 'No',
+        );
+      }
     } on FirebaseAuthException catch (e) {
-      Get.snackbar(e.code, e.message ?? '');
+      if (e.code == 'user-not-found') {
+        toast('Tidak ada user untuk email ini');
+      } else if (e.code == 'wrong-password') {
+        toast('Password salah untuk email ini');
+      } else {
+        toast(e.toString());
+      }
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      toast(e.toString());
     }
   }
+
+  // void login(String email, String password) async {
+  //   try {
+  //     await auth.signInWithEmailAndPassword(
+  //         email: emailC.text, password: passC.text);
+  //     Get.offAndToNamed(Routes.HOME);
+  //   } on FirebaseAuthException catch (e) {
+  //     Get.snackbar(e.code, e.message ?? '');
+  //   } catch (e) {
+  //     Get.snackbar('Error', e.toString());
+  //   }
+  // }
 
   void signup() async {
     try {
@@ -62,7 +115,9 @@ class LoginController extends GetxController {
       UserModel user = UserModel(
         username: nameC.text,
         email: emailC.text,
-        birthDate: DateTime.now(),
+        password: passC.text,
+        birthDate: selectedDate,
+        image: '',
         time: DateTime.now(),
       );
       UserCredential myUser = await auth.createUserWithEmailAndPassword(
@@ -72,21 +127,61 @@ class LoginController extends GetxController {
       await myUser.user!.sendEmailVerification();
       user.id = myUser.user!.uid;
       if (user.id != null) {
-        firebaseFirestore.collection(usersCollection).doc(user.id).set(user.toJson).then((value) {
-          Get.defaultDialog(title: 'Verifikasi Email', middleText: 'Kami telah mengirimkan verifikasi ke Email anda', textConfirm: 'Oke', onConfirm: () {});
-        });
+        firebaseFirestore
+            .collection(usersCollection)
+            .doc(user.id)
+            .set(user.toJson);
+      }
+    } on FirebaseAuthException catch (e) {
+      isSaving = false;
+      if (e.code == 'weak-password') {
+        toast('Password terlalu lemah');
+      } else if (e.code == 'email-already-in-use') {
+        toast('Akun sudah ada untuk email ini');
+      } else {
+        toast(e.toString());
       }
     }
   }
+
+  // void logout() async {
+  //   await FirebaseAuth.instance.signOut();
+  //   Get.offAndToNamed(Routes.LOGIN);
+  // }
+
   void logout() async {
-    await FirebaseAuth.instance.signOut();
-    Get.offAndToNamed(Routes.LOGIN);
+    Get.defaultDialog(
+        title: 'Logout',
+        middleText: 'Anda yakin ingin keluar?',
+        onConfirm: () async {
+          await FirebaseAuth.instance.signOut();
+          Get.back();
+          isSaving = false;
+          emailC.clear();
+          passC.clear();
+          Get.offAndToNamed(Routes.LOGIN);
+        },
+        textConfirm: 'Yes',
+        textCancel: 'No');
+  }
+
+  StreamUser(User? fuser) {
+    if (fuser != null) {
+      currUser.bindStream(UserModel().streamList(fuser.uid));
+      print('auth id = ' + fuser.uid);
+    } else {
+      print('null auth');
+      user = UserModel();
+    }
   }
 
   final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
+    firebaseUser = Rx<User?>(auth.currentUser);
+    firebaseUser.bindStream(auth.userChanges());
+    ever(firebaseUser, StreamUser);
   }
 
   @override
@@ -96,8 +191,9 @@ class LoginController extends GetxController {
 
   @override
   void onClose() {
-    super.onClose();
+    emailC.clear();
+    passC.clear();
+    passC2.clear();
+    nameC.clear();
   }
-
-  void increment() => count.value++;
 }
