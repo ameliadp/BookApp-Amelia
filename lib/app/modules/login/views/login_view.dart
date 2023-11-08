@@ -291,65 +291,44 @@ class LoginView extends GetView<LoginController> {
                               ),
                             ),
                             if (controller.isRegis)
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: 8, right: 8, top: 8, bottom: 5),
+                              Container(
+                                margin:
+                                    EdgeInsets.only(left: 8, right: 8, top: 7),
                                 child: Row(
                                   children: [
-                                    Icon(
-                                      Icons.calendar_today,
-                                      color: Color(0xff8332A6),
+                                    Container(
+                                      width: 24,
+                                      alignment: Alignment.centerLeft,
+                                      child: Icon(
+                                        Icons.calendar_today,
+                                        color: Color(0xff8332A6),
+                                      ),
                                     ),
                                     SizedBox(width: 10),
-                                    SizedBox(
-                                      height: 60,
-                                      width: 220,
-                                      child: TextFormField(
-                                        controller: controller.birthDateC,
-                                        autocorrect: false,
-                                        textInputAction: TextInputAction.done,
-                                        readOnly: true,
-                                        onTap: () async {
-                                          DateTime? selectedDate =
-                                              await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime.now(),
-                                          );
-                                          if (selectedDate != null) {
-                                            String formattedDate =
-                                                DateFormat('E, d MMMM y', 'en')
-                                                    .format(selectedDate);
-                                            controller.birthDateC.text =
-                                                formattedDate;
-                                          }
-                                        },
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.only(
-                                              top: 10, bottom: 5),
-                                          labelText: 'Birth Date',
-                                          labelStyle: TextStyle(
-                                              color: Color(0xff8332A6)),
-                                          border: UnderlineInputBorder(
-                                            borderSide: BorderSide(
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 15),
+                                      child: Container(
+                                        height: 60,
+                                        width: 220,
+                                        child: ListTile(
+                                          onTap: () async => await controller
+                                              .handleBirthDate(context),
+                                          title: Text(
+                                            "Birth Date",
+                                            style: TextStyle(
+                                                fontSize: 15,
                                                 color: Color(0xff8332A6)),
                                           ),
-                                          focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Color(0xff8332A6)),
-                                          ),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Color(0xff8332A6)),
+                                          subtitle: Text(
+                                            controller.selectedDate is DateTime
+                                                ? DateFormat("EEE, dd MMM y")
+                                                    .format(controller
+                                                        .selectedDate!)
+                                                : '--',
+                                            style: TextStyle(fontSize: 15),
                                           ),
                                         ),
-                                        validator: (value) {
-                                          if (value!.isEmpty) {
-                                            return 'Harap isi tanggal lahir Anda';
-                                          }
-                                          return null;
-                                        },
                                       ),
                                     ),
                                   ],
@@ -381,22 +360,22 @@ class LoginView extends GetView<LoginController> {
                                           children: [
                                             Radio<String>(
                                               value: 'male',
-                                              groupValue: controller
-                                                  .selectedGender.value,
+                                              groupValue:
+                                                  controller.selectedGender,
                                               onChanged: (value) {
-                                                controller.selectedGender
-                                                    .value = value ?? '';
+                                                controller.selectedGender =
+                                                    value ?? '';
                                               },
                                               activeColor: Color(0xff8332A6),
                                             ),
                                             Text('male'),
                                             Radio<String>(
                                               value: 'female',
-                                              groupValue: controller
-                                                  .selectedGender.value,
+                                              groupValue:
+                                                  controller.selectedGender,
                                               onChanged: (value) {
-                                                controller.selectedGender
-                                                    .value = value ?? '';
+                                                controller.selectedGender =
+                                                    value ?? '';
                                               },
                                               activeColor: Color(0xff8332A6),
                                             ),
@@ -419,7 +398,7 @@ class LoginView extends GetView<LoginController> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
-                        if (controller.isRegis) {
+                        if (controller.isRegis) { 
                           if (controller.isSaving) {
                             showDialog(
                               context: context,
@@ -428,12 +407,14 @@ class LoginView extends GetView<LoginController> {
                                   content: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      CircularProgressIndicator(),
+                                      CircularProgressIndicator(
+                                          color: Color(0xff8332A6)),
                                       15.height,
                                       Text(
                                         'Loading..',
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xff8332A6)),
                                       )
                                     ],
                                   ),
@@ -452,12 +433,16 @@ class LoginView extends GetView<LoginController> {
                                   content: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                      CircularProgressIndicator(),
+                                      CircularProgressIndicator(
+                                          color: Color(0xff8332A6)),
                                       15.height,
-                                      Text(
-                                        'Loading..',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                      Center(
+                                        child: Text(
+                                          'Loading..',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xff8332A6)),
+                                        ),
                                       )
                                     ],
                                   ),

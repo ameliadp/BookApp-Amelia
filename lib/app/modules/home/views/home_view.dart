@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app/app/addition/bottomnav.dart';
 import 'package:firebase_app/app/modules/login/controllers/login_controller.dart';
 import 'package:firebase_app/app/modules/profile/views/profile_view.dart';
@@ -142,7 +143,7 @@ class HomeView extends GetView<HomeController> {
                                     fontSize: 22),
                               ),
                               Text(
-                                'Username',
+                                '${authC.user.username}',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w100,
@@ -239,14 +240,14 @@ class HomeView extends GetView<HomeController> {
                                                       Icon(
                                                         Icons.edit,
                                                         color: Colors.white,
-                                                        size: 30,
+                                                        size: 20,
                                                       ),
                                                       SizedBox(width: 10),
                                                       Text(
                                                         'Edit',
                                                         style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 20),
+                                                            fontSize: 15),
                                                       ),
                                                     ],
                                                   ),
@@ -259,14 +260,14 @@ class HomeView extends GetView<HomeController> {
                                                       Icon(
                                                         Icons.delete,
                                                         color: Colors.white,
-                                                        size: 30,
+                                                        size: 20,
                                                       ),
                                                       SizedBox(width: 10),
                                                       Text(
                                                         'Delete',
                                                         style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 20),
+                                                            fontSize: 15),
                                                       ),
                                                     ],
                                                   )
@@ -296,7 +297,7 @@ class HomeView extends GetView<HomeController> {
                                                   child: Icon(
                                                     Icons.close_rounded,
                                                     color: Colors.white,
-                                                    size: 15,
+                                                    size: 13,
                                                   ),
                                                 ),
                                               ),

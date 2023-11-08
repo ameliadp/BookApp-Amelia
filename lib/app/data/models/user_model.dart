@@ -9,6 +9,7 @@ class UserModel {
   String? email;
   String? password;
   String? image;
+  String? gender;
   DateTime? birthDate;
   DateTime? time;
 
@@ -18,6 +19,7 @@ class UserModel {
       this.email,
       this.password,
       this.image,
+      this.gender,
       this.birthDate,
       this.time});
 
@@ -29,6 +31,7 @@ class UserModel {
       email: json?['email'],
       password: json?['password'],
       image: json?['image'],
+      gender: json?['gender'],
       birthDate: (json?['birthDate'] as Timestamp?)?.toDate(),
       time: (json?['time'] as Timestamp?)?.toDate(),
     );
@@ -40,6 +43,7 @@ class UserModel {
         'email': email,
         'password': password,
         'image': image,
+        'gender': gender,
         'birthDate': birthDate,
         'time': time,
       };

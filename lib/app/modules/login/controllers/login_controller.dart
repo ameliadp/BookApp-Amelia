@@ -35,6 +35,7 @@ class LoginController extends GetxController {
 
   var role = 'user';
 
+  //read data login
   var currUser = UserModel().obs;
   UserModel get user => currUser.value;
   set user(UserModel value) => currUser.value = value;
@@ -48,7 +49,8 @@ class LoginController extends GetxController {
   set isSaving(value) => _isSaving.value = value;
 
   RxString _selectedGender = ''.obs;
-  RxString get selectedGender => _selectedGender;
+  String get selectedGender => _selectedGender.value;
+  set selectedGender(String value) => _selectedGender.value = value;
 
   void setSelectedGender(String value) {
     _selectedGender = value.obs;
@@ -71,9 +73,11 @@ class LoginController extends GetxController {
         Get.offAndToNamed(Routes.HOME);
       } else {
         Get.defaultDialog(
-          title: 'Failed to Login',
+          title: 'Verification',
+          titleStyle: TextStyle(color: Color(0xff8332A6)),
           middleText:
               'Verify your email first, Does verification need to be resent?',
+          middleTextStyle: TextStyle(color: Color(0xffab59cf)),
           onConfirm: () async {
             await myUser.user!.sendEmailVerification();
             Get.back();
@@ -117,6 +121,7 @@ class LoginController extends GetxController {
         email: emailC.text,
         password: passC.text,
         birthDate: selectedDate,
+        gender: selectedGender,
         image: '',
         time: DateTime.now(),
       );
@@ -131,6 +136,7 @@ class LoginController extends GetxController {
             .collection(usersCollection)
             .doc(user.id)
             .set(user.toJson);
+        Get.offAndToNamed(Routes.HOME);
       }
     } on FirebaseAuthException catch (e) {
       isSaving = false;
