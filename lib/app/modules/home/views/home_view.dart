@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app/app/addition/bottomnav.dart';
+import 'package:firebase_app/app/modules/form/controllers/form_controller.dart';
 import 'package:firebase_app/app/modules/login/controllers/login_controller.dart';
 import 'package:firebase_app/app/modules/profile/views/profile_view.dart';
 import 'package:firebase_app/app/routes/app_pages.dart';
@@ -53,16 +54,16 @@ class HomeView extends GetView<HomeController> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(
-                              left: 10, right: 10, bottom: 10),
+                              left: 10, right: 5, bottom: 10),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               elevation: 5,
-                              shadowColor: Colors.grey,
+                              shadowColor: Color(0xff8332A6),
                               backgroundColor: Color(0xff8332A6),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
-                              minimumSize: Size(100, 40), // Atur ukuran tombol
+                              minimumSize: Size(140, 40),
                             ),
                             onPressed: () {
                               formKey.currentState?.validate() == true;
@@ -72,21 +73,25 @@ class HomeView extends GetView<HomeController> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(
-                              left: 10, right: 10, bottom: 10),
+                              left: 5, right: 10, bottom: 10),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              elevation: 5,
-                              shadowColor: Colors.grey,
-                              backgroundColor: Color(0xff8332A6),
+                              elevation: 3,
+                              shadowColor: Color(0xff8332A6),
+                              backgroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
+                                side: BorderSide(color: Color(0xff8332A6)),
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
-                              minimumSize: Size(100, 40), // Atur ukuran tombol
+                              minimumSize: Size(80, 40),
                             ),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('Cancel'),
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(color: Color(0xff8332A6)),
+                            ),
                           ),
                         ),
                       ],
@@ -118,7 +123,7 @@ class HomeView extends GetView<HomeController> {
               children: [
                 //AVATAR & USERNAME
                 Padding(
-                  padding: const EdgeInsets.only(left: 25, top: 30),
+                  padding: const EdgeInsets.only(left: 25, top: 40),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -127,8 +132,10 @@ class HomeView extends GetView<HomeController> {
                           CircleAvatar(
                             backgroundColor: Colors.white,
                             radius: 30,
-                            backgroundImage:
-                                AssetImage('assets/images/avatar.png'),
+                            backgroundImage: AssetImage(
+                                authC.user.gender == 'male'
+                                    ? 'assets/images/avatarCowo.png'
+                                    : 'assets/images/avatarCewe.png'),
                           ),
                           SizedBox(width: 10),
                           Column(
@@ -142,13 +149,15 @@ class HomeView extends GetView<HomeController> {
                                     fontWeight: FontWeight.w200,
                                     fontSize: 22),
                               ),
-                              Text(
-                                '${authC.user.username}',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w100,
-                                    fontSize: 16),
-                              ),
+                              Obx(
+                                () => Text(
+                                  '${authC.user.username}',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w100,
+                                      fontSize: 16),
+                                ),
+                              )
                             ],
                           ),
                         ],
@@ -203,184 +212,209 @@ class HomeView extends GetView<HomeController> {
                   height: 220,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        return Obx(() {
-                          return GestureDetector(
-                              onTap: () {
-                                controller.showOverlay.value = index;
-                              },
-                              child: controller.showOverlay.value == index
-                                  ? Container(
-                                      width: 125,
-                                      height: 200,
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Color(0xff8332A6).withOpacity(0.8),
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          Center(
-                                            child: InkWell(
-                                              onTap: () {},
+                    child: StreamBuilder<QuerySnapshot<Object?>>(
+                        stream: controller.streamData(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.active) {
+                            var listAllBook = snapshot.data!.docs;
+                            return ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: listAllBook.length,
+                              itemBuilder: (context, index) {
+                                return Obx(() {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      controller.showOverlay.value = index;
+                                    },
+                                    child: controller.showOverlay.value == index
+                                        ? Container(
+                                            width: 125,
+                                            height: 200,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xff8332A6)
+                                                  .withOpacity(0.8),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Stack(
+                                              children: [
+                                                Center(
+                                                  child: InkWell(
+                                                    onTap: () {},
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Icon(
+                                                              Icons.edit,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 20,
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Text(
+                                                              'Edit',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 15),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Icon(
+                                                              Icons.delete,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 20,
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Text(
+                                                              'Delete',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 15),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: 10,
+                                                  right: 10,
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      controller.showOverlay
+                                                          .value = -1;
+                                                    },
+                                                    child: Container(
+                                                      width: 20,
+                                                      height: 20,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                          color: Colors.white,
+                                                          width: 1.0,
+                                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.close_rounded,
+                                                          color: Colors.white,
+                                                          size: 13,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : Container(
+                                            width: 125,
+                                            height: 200,
+                                            margin: EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              color: Colors.white,
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10),
                                               child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                    MainAxisAlignment.start,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.edit,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                      SizedBox(width: 10),
-                                                      Text(
-                                                        'Edit',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 15),
-                                                      ),
-                                                    ],
+                                                  Center(
+                                                    child: Image.network(
+                                                      '${(listAllBook[index].data() as Map<String, dynamic>)['image']}',
+                                                      width: 80,
+                                                      height: 60,
+                                                    ),
                                                   ),
                                                   SizedBox(height: 10),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.delete,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                      SizedBox(width: 10),
-                                                      Text(
-                                                        'Delete',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 15),
-                                                      ),
-                                                    ],
-                                                  )
+                                                  Text(
+                                                    '${(listAllBook[index].data() as Map<String, dynamic>)['title']}',
+                                                    style: TextStyle(
+                                                      color: Color(0xffBF2C98),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${(listAllBook[index].data() as Map<String, dynamic>)['category']}',
+                                                    style: TextStyle(
+                                                      color: Color(0xffBF2C98),
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w100,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '125/250 page',
+                                                    style: TextStyle(
+                                                      color: Color(0xffBF2C98),
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w100,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 15),
+                                                  Text(
+                                                    '50%',
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xffBF2C98),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w200),
+                                                  ),
+                                                  SizedBox(height: 5),
+                                                  LinearProgressIndicator(
+                                                    value: 0.5,
+                                                    backgroundColor:
+                                                        Color(0xffedebeb),
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                                Color>(
+                                                            Color(0xff7C39BF)),
+                                                    minHeight: 10,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
                                                 ],
                                               ),
                                             ),
                                           ),
-                                          Positioned(
-                                            top: 10,
-                                            right: 10,
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                controller.showOverlay.value =
-                                                    -1;
-                                              },
-                                              child: Container(
-                                                width: 20,
-                                                height: 20,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: Colors.white,
-                                                    width: 1.0,
-                                                  ),
-                                                ),
-                                                child: Center(
-                                                  child: Icon(
-                                                    Icons.close_rounded,
-                                                    color: Colors.white,
-                                                    size: 13,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : Container(
-                                      width: 125,
-                                      height: 200,
-                                      margin: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.white,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Center(
-                                              child: Image.asset(
-                                                'assets/images/iconBox.png',
-                                                width: 80,
-                                                height: 60,
-                                              ),
-                                            ),
-                                            SizedBox(height: 10),
-                                            Text(
-                                              'Book Name',
-                                              style: TextStyle(
-                                                color: Color(0xffBF2C98),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Category',
-                                              style: TextStyle(
-                                                color: Color(0xffBF2C98),
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w100,
-                                              ),
-                                            ),
-                                            Text(
-                                              '125/250 page',
-                                              style: TextStyle(
-                                                color: Color(0xffBF2C98),
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w100,
-                                              ),
-                                            ),
-                                            SizedBox(height: 15),
-                                            Text(
-                                              '50%',
-                                              style: TextStyle(
-                                                  color: Color(0xffBF2C98),
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w200),
-                                            ),
-                                            SizedBox(height: 5),
-                                            LinearProgressIndicator(
-                                              value: 0.5,
-                                              backgroundColor:
-                                                  Color(0xffedebeb),
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                      Color(0xff7C39BF)),
-                                              minHeight: 10,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ));
-                        });
-                      },
-                    ),
+                                  );
+                                });
+                              },
+                            );
+                          }
+                          return Center(child: CircularProgressIndicator());
+                        }),
                   ),
                 ),
                 SizedBox(height: 8),

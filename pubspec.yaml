@@ -16,6 +16,7 @@ dependencies:
   firebase_storage: 11.4.1
   fluttertoast: 8.2.2
   nb_utils: 6.0.6
+  image_picker: 1.0.4
   flutter: 
     sdk: flutter
 
@@ -32,5 +33,7 @@ flutter:
     - assets/images/iconBox.png
     - assets/images/formIcon (2).png
     - assets/images/formIcon.png
+    - assets/images/avatarCewe.png
+    - assets/images/avatarCowo.png
   uses-material-design: true
 

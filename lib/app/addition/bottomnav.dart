@@ -9,8 +9,10 @@ class BottomNav extends StatelessWidget {
   RxInt currentIndex = 0.obs;
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Stack(children: [
-          BottomAppBar(
+    return Stack(
+      children: [
+        Obx(
+          () => BottomAppBar(
             notchMargin: 5.0,
             shape: CircularNotchedRectangle(),
             height: 60,
@@ -46,6 +48,8 @@ class BottomNav extends StatelessWidget {
               ],
             ),
           ),
-        ]));
+        ),
+      ],
+    );
   }
 }

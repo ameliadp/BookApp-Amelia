@@ -3,7 +3,6 @@ import 'package:firebase_app/app/data/models/user_model.dart';
 import 'package:firebase_app/app/routes/app_pages.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -86,6 +85,9 @@ class LoginController extends GetxController {
           },
           textConfirm: 'Yes',
           textCancel: 'No',
+          buttonColor: Color(0xff8332A6),
+          confirmTextColor: Colors.white,
+          cancelTextColor: Color(0xff8332A6),
         );
       }
     } on FirebaseAuthException catch (e) {
@@ -157,18 +159,22 @@ class LoginController extends GetxController {
 
   void logout() async {
     Get.defaultDialog(
-        title: 'Logout',
-        middleText: 'Anda yakin ingin keluar?',
-        onConfirm: () async {
-          await FirebaseAuth.instance.signOut();
-          Get.back();
-          isSaving = false;
-          emailC.clear();
-          passC.clear();
-          Get.offAndToNamed(Routes.LOGIN);
-        },
-        textConfirm: 'Yes',
-        textCancel: 'No');
+      title: 'Logout',
+      middleText: 'Anda yakin ingin keluar?',
+      onConfirm: () async {
+        await FirebaseAuth.instance.signOut();
+        Get.back();
+        isSaving = false;
+        emailC.clear();
+        passC.clear();
+        Get.offAndToNamed(Routes.LOGIN);
+      },
+      textConfirm: 'Yes',
+      textCancel: 'No',
+      buttonColor: Color(0xff8332A6),
+      confirmTextColor: Colors.white,
+      cancelTextColor: Color(0xff8332A6),
+    );
   }
 
   StreamUser(User? fuser) {

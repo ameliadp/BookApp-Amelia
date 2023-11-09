@@ -24,7 +24,7 @@ class UserModel {
       this.time});
 
   UserModel fromJson(DocumentSnapshot doc) {
-    var json = doc.data as Map<String, dynamic>?;
+    var json = doc.data() as Map<String, dynamic>?;
     return UserModel(
       id: doc.id,
       username: json?['username'],
