@@ -31,11 +31,13 @@ class ReadModel {
         'time': time,
       };
 
-  Database db = Database(
-      collectionReference: firebaseFirestore.collection(
-        readCollection,
-      ),
-      storageReference: firebaseStorage.ref(readCollection));
+  Database get db => Database(
+      collectionReference: firebaseFirestore
+          .collection(bookCollection)
+          .doc(bookId)
+          .collection(readCollection),
+      storageReference:
+          firebaseStorage.ref(bookCollection).child(readCollection));
 
   Future<ReadModel> save({File? file}) async {
     id == null ? id = await db.add(toJson) : await db.edit(toJson);

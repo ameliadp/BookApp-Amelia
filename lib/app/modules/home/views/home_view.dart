@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_app/app/addition/bottomnav.dart';
+import 'package:firebase_app/app/data/models/book_model.dart';
+import 'package:firebase_app/app/data/models/read_model.dart';
 import 'package:firebase_app/app/modules/form/controllers/form_controller.dart';
 import 'package:firebase_app/app/modules/login/controllers/login_controller.dart';
 import 'package:firebase_app/app/modules/profile/views/profile_view.dart';
@@ -7,12 +10,15 @@ import 'package:firebase_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   GlobalKey<FormState> formKey = GlobalKey();
   final authC = Get.find<LoginController>();
+  BookModel book = Get.arguments ?? BookModel();
+  ReadModel read = Get.arguments ?? ReadModel();
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +71,25 @@ class HomeView extends GetView<HomeController> {
                               ),
                               minimumSize: Size(140, 40),
                             ),
-                            onPressed: () {
-                              formKey.currentState?.validate() == true;
+                            onPressed: () async {
+                              if (formKey.currentState?.validate() == true) {
+                                if (controller.isSaving.value == false) {
+                                  await controller.store(read, book);
+                                } else {
+                                  Get.defaultDialog(
+                                    title: 'Gagal!',
+                                    middleText: 'Data tidak berhasil disimpan',
+                                    middleTextStyle:
+                                        TextStyle(color: Color(0xff8332A6)),
+                                    onConfirm: () {
+                                      Get.back();
+                                    },
+                                    textConfirm: 'Oke',
+                                    buttonColor: Color(0xff8332A6),
+                                    confirmTextColor: Colors.white,
+                                  );
+                                }
+                              }
                             },
                             child: Text('Submit'),
                           ),
@@ -233,24 +256,35 @@ class HomeView extends GetView<HomeController> {
                                             height: 200,
                                             decoration: BoxDecoration(
                                               color: Color(0xff8332A6)
-                                                  .withOpacity(0.8),
+                                                  .withOpacity(0.5),
                                               borderRadius:
                                                   BorderRadius.circular(20),
                                             ),
                                             child: Stack(
                                               children: [
                                                 Center(
-                                                  child: InkWell(
-                                                    onTap: () {},
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      InkWell(
+                                                        onTap: () {
+                                                          Get.toNamed(
+                                                                  Routes.FORM,
+                                                                  arguments:
+                                                                      book)
+                                                              ?.then((update) {
+                                                            if (update !=
+                                                                    null &&
+                                                                update
+                                                                    is BookModel) {}
+                                                          });
+                                                        },
+                                                        child: Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
                                                                   .center,
@@ -271,8 +305,11 @@ class HomeView extends GetView<HomeController> {
                                                             ),
                                                           ],
                                                         ),
-                                                        SizedBox(height: 10),
-                                                        Row(
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      InkWell(
+                                                        onTap: () {},
+                                                        child: Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
                                                                   .center,
@@ -292,9 +329,9 @@ class HomeView extends GetView<HomeController> {
                                                                   fontSize: 15),
                                                             ),
                                                           ],
-                                                        )
-                                                      ],
-                                                    ),
+                                                        ),
+                                                      )
+                                                    ],
                                                   ),
                                                 ),
                                                 Positioned(
@@ -348,8 +385,8 @@ class HomeView extends GetView<HomeController> {
                                                   Center(
                                                     child: Image.network(
                                                       '${(listAllBook[index].data() as Map<String, dynamic>)['image']}',
-                                                      width: 80,
-                                                      height: 60,
+                                                      width: 90,
+                                                      height: 80,
                                                     ),
                                                   ),
                                                   SizedBox(height: 10),
@@ -372,7 +409,7 @@ class HomeView extends GetView<HomeController> {
                                                     ),
                                                   ),
                                                   Text(
-                                                    '125/250 page',
+                                                    '125/${(listAllBook[index].data() as Map<String, dynamic>)['page']} page',
                                                     style: TextStyle(
                                                       color: Color(0xffBF2C98),
                                                       fontSize: 15,
@@ -547,37 +584,68 @@ Widget _buildTextFieldOne(String label, HomeController controller) {
         SizedBox(
           height: 60,
           width: 180,
-          child: TextFormField(
-            controller: controller.bTitleC,
-            autocorrect: false,
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.only(top: 10, bottom: 5),
-              labelText: 'Select Book',
-              labelStyle: TextStyle(color: Color(0xff8332A6)),
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(color: Color(0xff8332A6)),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Color(0xff8332A6)),
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Color(0xff8332A6)),
+          child: DropdownSearch<BookModel>(
+            items: controller.book,
+            itemAsString: (BookModel) => BookModel.title!,
+            onChanged: (BookModel) {
+              if (BookModel != null) {
+                controller.selectedbook = BookModel;
+                controller.bookid = BookModel.id;
+                controller.prevPR.text = BookModel.readPage.toString();
+              } else {
+                toast('Select Book wajib diisi!');
+              }
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+              dropdownSearchDecoration: InputDecoration(
+                labelText: 'Category',
+                labelStyle: TextStyle(color: Color(0xff8332A6)),
+                border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xff8332A6)),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xff8332A6)),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xff8332A6)),
+                ),
+                alignLabelWithHint: true,
               ),
             ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Judul buku wajib diisi !';
-              }
-              return null;
-            },
           ),
         ),
       ],
     ),
   );
 }
+
+// Widget _buildTextFieldOne(String label, HomeController controller) {
+//   return Padding(
+//     padding: const EdgeInsets.only(left: 3, right: 3, top: 5),
+//     child: Row(
+//       children: [
+//         Icon(
+//           Icons.book_rounded,
+//           color: Color(0xff8332A6),
+//         ),
+//         SizedBox(width: 10),
+//         SizedBox(
+//           height: 60,
+//           width: 180,
+//           child: DropdownSearch<BookModel>(
+//             items: controller.book,
+//             itemAsString: (BookModel) => BookModel.title!,
+//             onChanged: (BookModel) {
+//               controller.selectedbook = BookModel;
+//               controller.bookid = BookModel!.id;
+//               controller.prevPR.text = BookModel.readPage.toString();
+//             },
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
 
 Widget _buildTextFieldTwo(String label, HomeController controller) {
   return Padding(

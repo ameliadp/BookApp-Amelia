@@ -323,7 +323,7 @@ class FormView extends GetView<FormController> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState?.validate() == true) {
-                      controller.store(book);
+                      controller.store(book, path: controller.addImage.value);
                     } else {
                       Get.defaultDialog(
                         title: 'Gagal!',

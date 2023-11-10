@@ -13,10 +13,6 @@ class FormController extends GetxController {
   TextEditingController categoryC = TextEditingController();
   TextEditingController pageC = TextEditingController();
 
-  var currBook = BookModel().obs;
-  BookModel get book => currBook.value;
-  set user(BookModel value) => currBook.value = value;
-
   Rxn<String> _selectedValue = Rxn<String>();
   String? get selectedValue => _selectedValue.value;
   set selectedValue(String? value) => _selectedValue.value = value;

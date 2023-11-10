@@ -17,6 +17,7 @@ dependencies:
   fluttertoast: 8.2.2
   nb_utils: 6.0.6
   image_picker: 1.0.4
+  dropdown_search: 5.0.6
   flutter: 
     sdk: flutter
 

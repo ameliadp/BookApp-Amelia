@@ -1,3 +1,4 @@
+import 'package:firebase_app/app/modules/form/controllers/form_controller.dart';
 import 'package:firebase_app/app/modules/home/views/home_view.dart';
 import 'package:firebase_app/app/modules/login/controllers/login_controller.dart';
 import 'package:firebase_app/app/modules/login/views/login_view.dart';
