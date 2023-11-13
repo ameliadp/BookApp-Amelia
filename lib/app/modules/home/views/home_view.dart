@@ -10,6 +10,7 @@ import 'package:firebase_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../controllers/home_controller.dart';
@@ -235,223 +236,229 @@ class HomeView extends GetView<HomeController> {
                   height: 220,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8),
-                    child: StreamBuilder<QuerySnapshot<Object?>>(
-                        stream: controller.streamData(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.active) {
-                            var listAllBook = snapshot.data!.docs;
-                            return ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: listAllBook.length,
-                              itemBuilder: (context, index) {
-                                return Obx(() {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      controller.showOverlay.value = index;
-                                    },
-                                    child: controller.showOverlay.value == index
-                                        ? Container(
-                                            width: 125,
-                                            height: 200,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xff8332A6)
-                                                  .withOpacity(0.5),
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: Stack(
-                                              children: [
-                                                Center(
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      InkWell(
-                                                        onTap: () {
-                                                          Get.toNamed(
-                                                                  Routes.FORM,
-                                                                  arguments:
-                                                                      book)
-                                                              ?.then((update) {
-                                                            if (update !=
-                                                                    null &&
-                                                                update
-                                                                    is BookModel) {}
-                                                          });
-                                                        },
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Icon(
-                                                              Icons.edit,
-                                                              color:
-                                                                  Colors.white,
-                                                              size: 20,
-                                                            ),
-                                                            SizedBox(width: 10),
-                                                            Text(
-                                                              'Edit',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 15),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      InkWell(
-                                                        onTap: () {},
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Icon(
-                                                              Icons.delete,
-                                                              color:
-                                                                  Colors.white,
-                                                              size: 20,
-                                                            ),
-                                                            SizedBox(width: 10),
-                                                            Text(
-                                                              'Delete',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 15),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                  top: 10,
-                                                  right: 10,
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      controller.showOverlay
-                                                          .value = -1;
-                                                    },
-                                                    child: Container(
-                                                      width: 20,
-                                                      height: 20,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        border: Border.all(
-                                                          color: Colors.white,
-                                                          width: 1.0,
-                                                        ),
-                                                      ),
-                                                      child: Center(
-                                                        child: Icon(
-                                                          Icons.close_rounded,
-                                                          color: Colors.white,
-                                                          size: 13,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : Container(
-                                            width: 125,
-                                            height: 200,
-                                            margin: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              color: Colors.white,
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(10),
+                    child: Obx(
+                      () => ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: controller.book.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Obx(() => GestureDetector(
+                                onTap: () {
+                                  controller.showOverlay.value = index;
+                                },
+                                child: controller.showOverlay.value == index
+                                    ? Container(
+                                        width: 125,
+                                        height: 200,
+                                        margin: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xff8332A6)
+                                              .withOpacity(0.9),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Stack(
+                                          children: [
+                                            Center(
                                               child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                    MainAxisAlignment.center,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Center(
-                                                    child: Image.network(
-                                                      '${(listAllBook[index].data() as Map<String, dynamic>)['image']}',
-                                                      width: 90,
-                                                      height: 80,
+                                                  InkWell(
+                                                    onTap: () {
+                                                      Get.toNamed(Routes.FORM,
+                                                          arguments: book);
+                                                      //       ?.then((update) {
+                                                      //     if (update != null &&
+                                                      //         update
+                                                      //             is BookModel) {}
+                                                      //   });
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.edit,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
+                                                        SizedBox(width: 10),
+                                                        Text(
+                                                          'Edit',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 15),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                   SizedBox(height: 10),
-                                                  Text(
-                                                    '${(listAllBook[index].data() as Map<String, dynamic>)['title']}',
-                                                    style: TextStyle(
-                                                      color: Color(0xffBF2C98),
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                  InkWell(
+                                                    onTap: () {
+                                                      controller.delete(book);
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.delete,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
+                                                        SizedBox(width: 10),
+                                                        Text(
+                                                          'Delete',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 15),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                  Text(
-                                                    '${(listAllBook[index].data() as Map<String, dynamic>)['category']}',
-                                                    style: TextStyle(
-                                                      color: Color(0xffBF2C98),
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w100,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    '125/${(listAllBook[index].data() as Map<String, dynamic>)['page']} page',
-                                                    style: TextStyle(
-                                                      color: Color(0xffBF2C98),
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w100,
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 15),
-                                                  Text(
-                                                    '50%',
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xffBF2C98),
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w200),
-                                                  ),
-                                                  SizedBox(height: 5),
-                                                  LinearProgressIndicator(
-                                                    value: 0.5,
-                                                    backgroundColor:
-                                                        Color(0xffedebeb),
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation<
-                                                                Color>(
-                                                            Color(0xff7C39BF)),
-                                                    minHeight: 10,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
+                                                  )
                                                 ],
                                               ),
                                             ),
+                                            Positioned(
+                                              top: 10,
+                                              right: 10,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  controller.showOverlay.value =
+                                                      -1;
+                                                },
+                                                child: Container(
+                                                  width: 20,
+                                                  height: 20,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                      color: Colors.white,
+                                                      width: 1.0,
+                                                    ),
+                                                  ),
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.close_rounded,
+                                                      color: Colors.white,
+                                                      size: 13,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : Container(
+                                        width: 125,
+                                        height: 200,
+                                        margin: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Center(
+                                                child: controller.book[index]
+                                                        .image.isEmptyOrNull
+                                                    ? Image.asset(
+                                                        'assets/images/iconBox.png',
+                                                        width: 80,
+                                                        height: 60,
+                                                      )
+                                                    : Image.network(
+                                                        '${controller.book[index].image}',
+                                                        width: 90,
+                                                        height: 80,
+                                                      ),
+                                              ),
+                                              SizedBox(height: 10),
+                                              Text(
+                                                '${controller.book[index].title}',
+                                                style: TextStyle(
+                                                  color: Color(0xffBF2C98),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                '${controller.book[index].category}',
+                                                style: TextStyle(
+                                                  color: Color(0xffBF2C98),
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w100,
+                                                ),
+                                              ),
+                                              Text(
+                                                '${controller.book[index].readPage}/${controller.book[index].page} page',
+                                                style: TextStyle(
+                                                  color: Color(0xffBF2C98),
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w100,
+                                                ),
+                                              ),
+                                              SizedBox(height: 15),
+                                              Text(
+                                                NumberFormat.percentPattern(
+                                                        'id')
+                                                    .format((controller
+                                                                .book[index]
+                                                                .readPage ??
+                                                            0) /
+                                                        (controller.book[index]
+                                                                .page ??
+                                                            0)),
+                                                style: TextStyle(
+                                                    color: Color(0xffBF2C98),
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w200),
+                                              ),
+                                              SizedBox(height: 5),
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                                child: LinearProgressIndicator(
+                                                  value: (controller.book[index]
+                                                              .readPage ??
+                                                          0) /
+                                                      (controller.book[index]
+                                                              .page ??
+                                                          0),
+                                                  backgroundColor:
+                                                      Color(0xffedebeb),
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                              Color>(
+                                                          Color(0xff7C39BF)),
+                                                  minHeight: 10,
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                  );
-                                });
-                              },
-                            );
-                          }
-                          return Center(child: CircularProgressIndicator());
-                        }),
+                                        ),
+                                      ),
+                              ));
+                        },
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 8),
@@ -463,94 +470,98 @@ class HomeView extends GetView<HomeController> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   width: double.infinity,
-                  height: 700,
+                  height: 500,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15, top: 15, bottom: 15),
-                        child: Text(
-                          'Recent Activity',
-                          style: TextStyle(color: Colors.black, fontSize: 20),
-                        ),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 15, top: 15, bottom: 15),
+                            child: Text(
+                              'Recent Activity',
+                              style: TextStyle(
+                                  color: Color(0xFF8332A6), fontSize: 20),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Icon(Icons.menu_book_outlined,
+                              color: Color(0xFF8332A6)),
+                        ],
                       ),
-                      Expanded(
-                        child: Container(
-                          height: 650,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: 20,
-                            itemBuilder: (BuildContext context, int index) {
-                              Color backgroundColor = index % 2 == 0
-                                  ? Color(0xffBF2C98).withOpacity(0.1)
-                                  : Color(0xffBF2C98).withOpacity(0.2);
-                              return Container(
-                                margin: EdgeInsets.all(0),
-                                width: double.infinity,
-                                height: 50,
-                                color: backgroundColor,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Image.asset(
-                                        'assets/images/iconBox.png',
-                                        width: 50,
+                      Obx(
+                        () => controller.listread.length < 1
+                            ? Center(
+                                child: Text('No Read Found',
+                                    style: TextStyle(color: Color(0xff7c39bf))),
+                              )
+                            : Expanded(
+                                child: Container(
+                                  height: 650,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: ScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: controller.listread.length,
+                                    itemBuilder: (context, index) {
+                                      Color backgroundColor = index % 2 == 0
+                                          ? Color(0xffBF2C98).withOpacity(0.1)
+                                          : Color(0xffBF2C98).withOpacity(0.2);
+                                      ReadModel read =
+                                          controller.listread[index];
+                                      BookModel? book = controller.book
+                                          .firstWhereOrNull((element) =>
+                                              element.id ==
+                                              controller
+                                                  .listread[index].bookId);
+                                      return Container(
+                                        margin: EdgeInsets.all(0),
+                                        width: double.infinity,
                                         height: 50,
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Book Name',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16),
-                                        ),
-                                        Text(
-                                          'Tue, 23 Oct 2023, 12/25',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 88),
-                                      child: Container(
-                                        width: 50,
-                                        height: 20,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffBF2C98),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            '1-20',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15),
+                                        color: backgroundColor,
+                                        child: ListTile(
+                                          leading:
+                                              book?.image.isEmptyOrNull ?? true
+                                                  ? Image.asset(
+                                                      'assets/images/iconBox.png',
+                                                      width: 50,
+                                                      height: 50,
+                                                    )
+                                                  : Image.network(
+                                                      book!.image!,
+                                                      height: 50,
+                                                      width: 50,
+                                                    ),
+                                          title: Text(
+                                            book?.title ?? 'Book Name',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          trailing: Container(
+                                            width: 50,
+                                            height: 20,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xffBF2C98),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                '${read.prePage} - ${read.newPage}',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                  ],
+                                      );
+                                    },
+                                  ),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
+                              ),
+                      )
                     ],
                   ),
                 ),
@@ -561,7 +572,10 @@ class HomeView extends GetView<HomeController> {
             alignment: Alignment.topRight,
             child: IconButton(
               onPressed: () => authC.logout(),
-              icon: Icon(Icons.logout),
+              icon: Icon(
+                Icons.logout,
+                color: Colors.white,
+              ),
             ),
           ),
         ],

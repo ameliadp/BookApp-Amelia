@@ -52,6 +52,23 @@ class ReadModel {
     return await db.delete(id!);
   }
 
+  Stream<List<ReadModel>> streamList() async* {
+    yield* db.collectionReference
+        .orderBy('time', descending: true)
+        .snapshots()
+        .map((query) {
+      List<ReadModel> list = [];
+      for (var doc in query.docs) {
+        list.add(
+          ReadModel.fromJson(
+            doc,
+          ),
+        );
+      }
+      return list;
+    });
+  }
+
   Stream<List<ReadModel>> streamAllList() async* {
     yield* firebaseFirestore
         .collection(readCollection)

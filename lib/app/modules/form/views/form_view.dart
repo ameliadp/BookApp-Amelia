@@ -8,6 +8,9 @@ import 'package:get/get.dart';
 import '../controllers/form_controller.dart';
 
 class FormView extends GetView<FormController> {
+  GlobalKey<FormState> formKey = GlobalKey();
+  BookModel book = Get.arguments ?? BookModel();
+  FormView({super.key});
   final categories = [
     'Novel',
     'Comic',
@@ -18,9 +21,6 @@ class FormView extends GetView<FormController> {
     'Pendidikan',
     'Motivasi',
   ];
-  GlobalKey<FormState> formKey = GlobalKey();
-  BookModel book = Get.arguments ?? BookModel();
-  FormView({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

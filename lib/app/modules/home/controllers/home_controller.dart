@@ -26,6 +26,10 @@ class HomeController extends GetxController {
   List<BookModel> get book => rxBooks.value;
   set book(List<BookModel> value) => rxBooks.value = value;
 
+  RxList<ReadModel> rxReads = RxList<ReadModel>();
+  List<ReadModel> get listread => rxReads.value;
+  set listread(List<ReadModel> value) => rxReads.value = value;
+
   final RxInt showOverlay = (-1).obs;
 
   String? BookID;
@@ -33,19 +37,19 @@ class HomeController extends GetxController {
   String? bookid;
   BookModel? selectedbook;
 
-
   var isSaving = false.obs;
 
   TextEditingController bTitleC = TextEditingController();
   TextEditingController prevPR = TextEditingController();
   TextEditingController newPR = TextEditingController();
 
-  controllerToModel(ReadModel read) async {
-    read.id = bookid;
+  controllerToModel(ReadModel read) {
+    // read.id = bookid;
     read.bookId = bookid;
     read.prePage = int.tryParse(prevPR.text);
     read.newPage = int.tryParse(newPR.text);
     read.time = DateTime.now();
+    return read;
   }
 
   modelToContoller(ReadModel read) {
@@ -56,13 +60,11 @@ class HomeController extends GetxController {
 
   Future store(ReadModel read, BookModel book) async {
     isSaving.value = true;
-    read.id = read.id;
-    read.bookId = bTitleC.text;
-    read.newPage = int.tryParse(newPR.text);
-    read.prePage = int.tryParse(prevPR.text);
-    read.time = DateTime.now();
+    read = controllerToModel(read);
     try {
       await read.save();
+      selectedbook!.readPage = read.newPage;
+      await selectedbook?.save();
       toast('Data berhasil diperbarui');
       Get.back();
     } catch (e) {
@@ -70,6 +72,93 @@ class HomeController extends GetxController {
       toast('Error ${e.toString()}');
     } finally {
       isSaving.value = false;
+    }
+  }
+
+  Future delete(BookModel book) async {
+    if (book.id != null) {
+      Get.defaultDialog(
+        title: 'Error',
+        middleText: 'Book ID not found',
+        onConfirm: () => Get.back(),
+        textConfirm: 'Okay',
+        buttonColor: Color(0xff8332A6),
+        confirmTextColor: Colors.white,
+        cancelTextColor: Color(0xff8332A6),
+        titleStyle: TextStyle(color: Color(0xff8332A6)),
+        middleTextStyle: TextStyle(color: Color(0xff8332A6)),
+      );
+      return Future.value(null);
+    }
+    try {
+      Get.defaultDialog(
+        onConfirm: () async {
+          try {
+            await book.delete();
+            Get.back();
+            Get.back();
+          } catch (e) {
+            print(e);
+          }
+        },
+        onCancel: () {
+          Get.back();
+          Get.back();
+        },
+        textConfirm: "Yes",
+        textCancel: "Cancel",
+        title: "Delete Book",
+        middleText: "Are you sure?",
+        buttonColor: Color(0xff8332A6),
+        confirmTextColor: Colors.white,
+        cancelTextColor: Color(0xff8332A6),
+        titleStyle: TextStyle(color: Color(0xff8332A6)),
+        middleTextStyle: TextStyle(color: Color(0xff8332A6)),
+      );
+    } on Exception catch (e) {
+      Get.defaultDialog(
+        title: "Error",
+        middleText: "Failed to delete",
+        onConfirm: () => Get.back(),
+        textConfirm: "Okay",
+        buttonColor: Color(0xff8332A6),
+        confirmTextColor: Colors.white,
+        cancelTextColor: black,
+        titleStyle: TextStyle(color: Color(0xff8332A6)),
+        middleTextStyle: TextStyle(color: Color(0xff8332A6)),
+      );
+    }
+  }
+
+  Future deleteread(ReadModel read) async {
+    if (read.id == null) {
+      Get.defaultDialog(
+        title: "Error",
+        middleText: "Book ID not found",
+        onConfirm: () => Get.back(),
+        textConfirm: "Okay",
+        buttonColor: Color(0xff8332A6),
+        confirmTextColor: Colors.white,
+        cancelTextColor: black,
+        titleStyle: TextStyle(color: Color(0xff8332A6)),
+        middleTextStyle: TextStyle(color: Color(0xff8332A6)),
+      );
+      return Future.value(null);
+    }
+    try {
+      await read.delete();
+    } on Exception catch (e) {
+      Get.defaultDialog(
+        title: "Error",
+        middleText: "Failed to delete ${e}",
+        onConfirm: () => Get.back(),
+        textConfirm: "Okay",
+        buttonColor: Color(0xff8332A6),
+        confirmTextColor: Colors.white,
+        cancelTextColor: black,
+        titleStyle: TextStyle(color: Color(0xff8332A6)),
+        middleTextStyle: TextStyle(color: Color(0xff8332A6)),
+      );
     }
   }
 
@@ -101,6 +190,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     rxBooks.bindStream(BookModel().streamList());
+    rxReads.bindStream(ReadModel().streamAllList());
     super.onInit();
   }
 
