@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app/app/data/database.dart';
 import 'package:firebase_app/app/integrations/firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class BookModel {
@@ -16,15 +18,15 @@ class BookModel {
   BookModel(
       {this.id, this.title, this.category, this.page, this.image, this.time});
 
-  BookModel.fromJson(DocumentSnapshot doc) {
-    Map<String, dynamic>? json = doc.data() as Map<String, dynamic>;
-    id = doc.id;
-    title = json['title'];
-    category = json['category'];
-    page = json['page'];
-    readPage = json['readPage'];
-    image = json['image'];
-    time = (json['time'] as Timestamp).toDate();
+  BookModel.fromJson(DocumentSnapshot snapshot) {
+    Map<String, dynamic>? json = snapshot.data() as Map<String, dynamic>?;
+    id = snapshot.id;
+    title = json?['title'];
+    category = json?['category'];
+    page = json?['page'];
+    readPage = json?['readPage'];
+    image = json?['image'];
+    time = (json?['time'] as Timestamp).toDate();
   }
 
   Map<String, dynamic> get toJson => {
@@ -50,8 +52,10 @@ class BookModel {
     return this;
   }
 
-  Future delete() async {
-    (id == null) ? toast('Error invalid ID') : await db.delete(id!, url: image);
+  Future delete(String idbook) async {
+    (idbook == null)
+        ? toast('Error invalid ID')
+        : await db.delete(idbook!, url: image);
   }
 
   Stream<List<BookModel>> streamList({int? limit}) async* {

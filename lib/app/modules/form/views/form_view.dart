@@ -23,6 +23,7 @@ class FormView extends GetView<FormController> {
   ];
   @override
   Widget build(BuildContext context) {
+    controller.modelToContoller(book);
     return Scaffold(
       backgroundColor: Color(0xffFBF2FF),
       appBar: AppBar(
@@ -323,7 +324,10 @@ class FormView extends GetView<FormController> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState?.validate() == true) {
-                      controller.store(book, path: controller.addImage.value);
+                      controller.store(
+                        book,
+                        path: controller.addImage.value,
+                      );
                     } else {
                       Get.defaultDialog(
                         title: 'Gagal!',

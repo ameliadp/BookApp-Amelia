@@ -10,17 +10,17 @@ import 'package:nb_utils/nb_utils.dart';
 class HomeController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<QuerySnapshot<Object?>> getData() async {
-    CollectionReference books = firestore.collection('book');
+  // Future<QuerySnapshot<Object?>> getData() async {
+  //   CollectionReference books = firestore.collection('book');
 
-    return books.get();
-  }
+  //   return books.get();
+  // }
 
-  Stream<QuerySnapshot<Object?>> streamData() {
-    CollectionReference books = firestore.collection('book');
+  // Stream<QuerySnapshot<Object?>> streamData() {
+  //   CollectionReference books = firestore.collection('book');
 
-    return books.snapshots();
-  }
+  //   return books.snapshots();
+  // }
 
   RxList<BookModel> rxBooks = RxList<BookModel>();
   List<BookModel> get book => rxBooks.value;
@@ -58,7 +58,7 @@ class HomeController extends GetxController {
     newPR.text = (read.newPage ?? '').toString();
   }
 
-  Future store(ReadModel read, BookModel book) async {
+  Future store(ReadModel read) async {
     isSaving.value = true;
     read = controllerToModel(read);
     try {
@@ -66,6 +66,7 @@ class HomeController extends GetxController {
       selectedbook!.readPage = read.newPage;
       await selectedbook?.save();
       toast('Data berhasil diperbarui');
+      Get.back();
       Get.back();
     } catch (e) {
       print(e);
@@ -94,7 +95,7 @@ class HomeController extends GetxController {
       Get.defaultDialog(
         onConfirm: () async {
           try {
-            await book.delete();
+            await book.delete(book.id ?? '');
             Get.back();
             Get.back();
           } catch (e) {

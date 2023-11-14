@@ -18,7 +18,7 @@ import '../controllers/home_controller.dart';
 class HomeView extends GetView<HomeController> {
   GlobalKey<FormState> formKey = GlobalKey();
   final authC = Get.find<LoginController>();
-  BookModel book = Get.arguments ?? BookModel();
+  // BookModel book = Get.arguments ?? BookModel();
   ReadModel read = Get.arguments ?? ReadModel();
 
   @override
@@ -75,7 +75,7 @@ class HomeView extends GetView<HomeController> {
                             onPressed: () async {
                               if (formKey.currentState?.validate() == true) {
                                 if (controller.isSaving.value == false) {
-                                  await controller.store(read, book);
+                                  await controller.store(read);
                                 } else {
                                   Get.defaultDialog(
                                     title: 'Gagal!',
@@ -268,7 +268,8 @@ class HomeView extends GetView<HomeController> {
                                                   InkWell(
                                                     onTap: () {
                                                       Get.toNamed(Routes.FORM,
-                                                          arguments: book);
+                                                          arguments: controller
+                                                              .book[index]);
                                                       //       ?.then((update) {
                                                       //     if (update != null &&
                                                       //         update
@@ -299,7 +300,9 @@ class HomeView extends GetView<HomeController> {
                                                   SizedBox(height: 10),
                                                   InkWell(
                                                     onTap: () {
-                                                      controller.delete(book);
+                                                      controller.delete(
+                                                          controller
+                                                              .book[index]);
                                                     },
                                                     child: Row(
                                                       mainAxisAlignment:
@@ -516,42 +519,114 @@ class HomeView extends GetView<HomeController> {
                                               element.id ==
                                               controller
                                                   .listread[index].bookId);
-                                      return Container(
-                                        margin: EdgeInsets.all(0),
-                                        width: double.infinity,
-                                        height: 50,
-                                        color: backgroundColor,
-                                        child: ListTile(
-                                          leading:
-                                              book?.image.isEmptyOrNull ?? true
-                                                  ? Image.asset(
-                                                      'assets/images/iconBox.png',
-                                                      width: 50,
-                                                      height: 50,
-                                                    )
-                                                  : Image.network(
-                                                      book!.image!,
-                                                      height: 50,
-                                                      width: 50,
+                                      return Dismissible(
+                                        key: Key(index.toString()),
+                                        confirmDismiss: (direction) async {
+                                          return await showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                titleTextStyle: TextStyle(
+                                                  color: Color(0xFF8332A6),
+                                                  fontSize: 20,
+                                                ),
+                                                contentTextStyle: TextStyle(
+                                                  color: Color(0xFF8332A6),
+                                                  fontSize: 17,
+                                                ),
+                                                title: Text("Confirm"),
+                                                content: Text(
+                                                    "Are you sure to delete this read?"),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop(false);
+                                                    },
+                                                    child: Text(
+                                                      "No",
+                                                      style: TextStyle(
+                                                          color: Color(
+                                                              0xFF8332A6)),
                                                     ),
-                                          title: Text(
-                                            book?.title ?? 'Book Name',
-                                            style: TextStyle(fontSize: 16),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop(true);
+                                                    },
+                                                    child: Text(
+                                                      "Yes",
+                                                      style: TextStyle(
+                                                          color: Color(
+                                                              0xFF8332A6)),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                        onDismissed: (direction) async {
+                                          await controller.deleteread(
+                                              controller.listread[index]);
+                                          controller.listread.removeAt(index);
+                                          // controller.listread.refresh();
+                                        },
+                                        background: Container(
+                                          color: Color(0xFF8332A6),
+                                          child: Icon(
+                                            Icons.delete,
+                                            color: Colors.white,
+                                            size: 35,
                                           ),
-                                          trailing: Container(
-                                            width: 50,
-                                            height: 20,
-                                            decoration: BoxDecoration(
-                                              color: Color(0xffBF2C98),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Center(
+                                          alignment: Alignment.centerRight,
+                                          padding: EdgeInsets.only(right: 20),
+                                        ),
+                                        child: Container(
+                                          margin: EdgeInsets.all(0),
+                                          width: double.infinity,
+                                          color: backgroundColor,
+                                          child: ListTile(
+                                            leading:
+                                                book?.image.isEmptyOrNull ??
+                                                        true
+                                                    ? Image.asset(
+                                                        'assets/images/iconBox.png',
+                                                        width: 60,
+                                                        height: 60,
+                                                        fit: BoxFit.contain,
+                                                      )
+                                                    : Image.network(
+                                                        book!.image!,
+                                                        height: 65,
+                                                        width: 60,
+                                                        fit: BoxFit.contain,
+                                                      ),
+                                            title: SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
                                               child: Text(
-                                                '${read.prePage} - ${read.newPage}',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15),
+                                                book?.title ?? 'Book Name',
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                            subtitle: Text(
+                                                '${DateFormat.yMMMEd().format(read.time!)}  ${read.prePage}/${read.newPage}'),
+                                            trailing: Container(
+                                              width: 50,
+                                              height: 20,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xffBF2C98),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  '${read.prePage} - ${read.newPage}',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15),
+                                                ),
                                               ),
                                             ),
                                           ),

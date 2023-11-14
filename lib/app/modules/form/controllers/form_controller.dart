@@ -47,7 +47,7 @@ class FormController extends GetxController {
     titleC.text = book.title ?? '';
     categoryC.text = book.category ?? '';
     pageC.text = (book.page ?? '').toString();
-    addImage.value = book.image ?? '';
+    // addImage.value = book.image ?? '';
   }
 
   Future store(BookModel book, {String? path}) async {

@@ -71,7 +71,7 @@ class ReadModel {
 
   Stream<List<ReadModel>> streamAllList() async* {
     yield* firebaseFirestore
-        .collection(readCollection)
+        .collectionGroup(readCollection)
         .snapshots()
         .map((query) {
       List<ReadModel> list = [];
