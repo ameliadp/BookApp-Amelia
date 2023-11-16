@@ -87,10 +87,10 @@ class ReadModel {
     });
   }
 
-  Stream<List<ReadModel>> streamListFromBook() async* {
+  Stream<List<ReadModel>> streamListFromBook(String idbook) async* {
     yield* firebaseFirestore
         .collection(bookCollection)
-        .doc(bookId)
+        .doc(idbook)
         .collection(readCollection)
         .snapshots()
         .map((query) {

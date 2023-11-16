@@ -35,7 +35,6 @@ class FormController extends GetxController {
     book.category = selectedValue;
     book.page = int.tryParse(pageC.text);
     book.readPage = 0;
-    book.image = addImage.value;
     book.time = DateTime.now();
     if (book.id != null) {
       book.time = DateTime.now();
@@ -45,9 +44,8 @@ class FormController extends GetxController {
 
   modelToContoller(BookModel book) {
     titleC.text = book.title ?? '';
-    categoryC.text = book.category ?? '';
+    selectedValue = book.category ?? '';
     pageC.text = (book.page ?? '').toString();
-    // addImage.value = book.image ?? '';
   }
 
   Future store(BookModel book, {String? path}) async {
@@ -94,4 +92,5 @@ class FormController extends GetxController {
   void onClose() {
     super.onClose();
   }
+  // addImage.value = book.image ?? '';// gabisa langsung tetapi melalui if else pada form view
 }

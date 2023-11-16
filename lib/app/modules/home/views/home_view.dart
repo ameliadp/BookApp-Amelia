@@ -57,11 +57,10 @@ class HomeView extends GetView<HomeController> {
                   ),
                   actions: <Widget>[
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(
-                              left: 10, right: 5, bottom: 10),
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               elevation: 5,
@@ -92,12 +91,14 @@ class HomeView extends GetView<HomeController> {
                                 }
                               }
                             },
-                            child: Text('Submit'),
+                            child: Text(
+                              'Submit',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(
-                              left: 5, right: 10, bottom: 10),
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               elevation: 3,
@@ -124,7 +125,11 @@ class HomeView extends GetView<HomeController> {
                 );
               });
         },
-        child: Icon(Icons.add),
+        shape: CircleBorder(),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         backgroundColor: Color(0xff8332A6),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -233,7 +238,7 @@ class HomeView extends GetView<HomeController> {
                 //LISTVIEW BUILDER >> HORIZONTAL
                 Container(
                   width: double.infinity,
-                  height: 220,
+                  height: 225,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: Obx(
@@ -395,7 +400,7 @@ class HomeView extends GetView<HomeController> {
                                                 '${controller.book[index].title}',
                                                 style: TextStyle(
                                                   color: Color(0xffBF2C98),
-                                                  fontSize: 16,
+                                                  fontSize: 15,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -403,7 +408,7 @@ class HomeView extends GetView<HomeController> {
                                                 '${controller.book[index].category}',
                                                 style: TextStyle(
                                                   color: Color(0xffBF2C98),
-                                                  fontSize: 15,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.w100,
                                                 ),
                                               ),
@@ -411,11 +416,11 @@ class HomeView extends GetView<HomeController> {
                                                 '${controller.book[index].readPage}/${controller.book[index].page} page',
                                                 style: TextStyle(
                                                   color: Color(0xffBF2C98),
-                                                  fontSize: 15,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.w100,
                                                 ),
                                               ),
-                                              SizedBox(height: 15),
+                                              SizedBox(height: 10),
                                               Text(
                                                 NumberFormat.percentPattern(
                                                         'id')
@@ -428,7 +433,7 @@ class HomeView extends GetView<HomeController> {
                                                             0)),
                                                 style: TextStyle(
                                                     color: Color(0xffBF2C98),
-                                                    fontSize: 16,
+                                                    fontSize: 15,
                                                     fontWeight:
                                                         FontWeight.w200),
                                               ),
@@ -607,7 +612,7 @@ class HomeView extends GetView<HomeController> {
                                               scrollDirection: Axis.horizontal,
                                               child: Text(
                                                 book?.title ?? 'Book Name',
-                                                style: TextStyle(fontSize: 16),
+                                                style: TextStyle(fontSize: 15),
                                               ),
                                             ),
                                             subtitle: Text(

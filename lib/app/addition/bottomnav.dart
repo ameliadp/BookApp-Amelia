@@ -13,6 +13,7 @@ class BottomNav extends StatelessWidget {
       children: [
         Obx(
           () => BottomAppBar(
+            color: Colors.white,
             notchMargin: 5.0,
             shape: CircularNotchedRectangle(),
             height: 60,

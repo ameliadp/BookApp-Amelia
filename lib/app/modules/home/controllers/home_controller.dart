@@ -30,6 +30,10 @@ class HomeController extends GetxController {
   List<ReadModel> get listread => rxReads.value;
   set listread(List<ReadModel> value) => rxReads.value = value;
 
+  RxList<ReadModel> rxReadsBook = RxList<ReadModel>();
+  List<ReadModel> get listReadBook => rxReadsBook.value;
+  set listReadBook(List<ReadModel> value) => rxReadsBook.value = value;
+
   final RxInt showOverlay = (-1).obs;
 
   String? BookID;
@@ -77,7 +81,7 @@ class HomeController extends GetxController {
   }
 
   Future delete(BookModel book) async {
-    if (book.id != null) {
+    if (book.id == null) {
       Get.defaultDialog(
         title: 'Error',
         middleText: 'Book ID not found',
@@ -91,10 +95,14 @@ class HomeController extends GetxController {
       );
       return Future.value(null);
     }
+    rxReadsBook.bindStream(ReadModel().streamListFromBook(book.id ?? ''));
     try {
       Get.defaultDialog(
         onConfirm: () async {
           try {
+            listReadBook.forEach((element) async {
+              await element.delete();
+            });
             await book.delete(book.id ?? '');
             Get.back();
             Get.back();
@@ -130,6 +138,65 @@ class HomeController extends GetxController {
       );
     }
   }
+
+  // Future delete(BookModel book) async {
+  //   if (book.id == null) {
+  //     Get.defaultDialog(
+  //       title: 'Error',
+  //       middleText: 'Book ID not found',
+  //       onConfirm: () => Get.back(),
+  //       textConfirm: 'Okay',
+  //       buttonColor: Color(0xff8332A6),
+  //       confirmTextColor: Colors.white,
+  //       cancelTextColor: Color(0xff8332A6),
+  //       titleStyle: TextStyle(color: Color(0xff8332A6)),
+  //       middleTextStyle: TextStyle(color: Color(0xff8332A6)),
+  //     );
+  //     return Future.value(null);
+  //   }
+  //   rxReadsBook.bindStream(ReadModel().streamListFromBook(book.id ?? ''));
+  //   try {
+  //     Get.defaultDialog(
+  //       onConfirm: () async {
+  //         try {
+  //           listReadBook.forEach((element) async {
+  //             await element.delete();
+  //           });
+  //           await book.delete(book.id ?? '');
+  //           Get.back();
+  //           Get.back();
+  //         } catch (e) {
+  //           print(e);
+  //         }
+  //       },
+  //       onCancel: () {
+  //         Get.back();
+  //         Get.back();
+  //       },
+  //       textConfirm: "Yes",
+  //       textCancel: "Cancel",
+  //       title: "Delete Book",
+  //       middleText: "Are you sure?",
+  //       buttonColor: Color(0xff8332A6),
+  //       confirmTextColor: Colors.white,
+  //       cancelTextColor: Color(0xff8332A6),
+  //       titleStyle: TextStyle(color: Color(0xff8332A6)),
+  //       middleTextStyle: TextStyle(color: Color(0xff8332A6)),
+  //     );
+  //   } on Exception catch (e) {
+  //     Get.defaultDialog(
+  //       title: "Error",
+  //       middleText: "Failed to delete",
+  //       onConfirm: () => Get.back(),
+  //       textConfirm: "Okay",
+  //       buttonColor: Color(0xff8332A6),
+  //       confirmTextColor: Colors.white,
+  //       cancelTextColor: black,
+  //       titleStyle: TextStyle(color: Color(0xff8332A6)),
+  //       middleTextStyle: TextStyle(color: Color(0xff8332A6)),
+  //     );
+  //   }
+  // }
 
   Future deleteread(ReadModel read) async {
     if (read.id == null) {

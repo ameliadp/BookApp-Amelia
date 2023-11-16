@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app/app/data/database.dart';
+import 'package:firebase_app/app/data/models/read_model.dart';
 import 'package:firebase_app/app/integrations/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -53,11 +54,32 @@ class BookModel {
   }
 
   Future delete(String idbook) async {
-    (idbook == null)
-        ? toast('Error invalid ID')
-        : await db.delete(idbook!, url: image);
+    if (idbook.isEmpty) {
+      toast('Error invalid ID');
+    } else {
+      firebaseFirestore
+          .collection(bookCollection)
+          .doc(id)
+          .collection(readCollection)
+          .snapshots()
+          .map((query) => {
+                for (var doc in query.docs)
+                  {
+                    firebaseFirestore
+                        .collection(bookCollection)
+                        .doc(id)
+                        .collection(readCollection)
+                        .doc(ReadModel.fromJson(doc).id)
+                        .delete()
+                  }
+              });
+      await db.delete(idbook, url: image);
+    }
   }
 
+// (idbook == null)
+//         ? toast('Error invalid ID')
+//         : await db.delete(idbook!, url: image);
   Stream<List<BookModel>> streamList({int? limit}) async* {
     var query = db.collectionReference.orderBy('time', descending: true);
     if (limit is int) {

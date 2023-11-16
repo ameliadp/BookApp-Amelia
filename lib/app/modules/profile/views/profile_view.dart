@@ -125,7 +125,7 @@ class ProfileView extends GetView<ProfileController> {
                                         color: Colors.black),
                                   ),
                                   Text(
-                                    '7',
+                                    controller.books.length.toString(),
                                     style: TextStyle(
                                       fontSize: 25.0,
                                       fontWeight: FontWeight.w500,
@@ -161,7 +161,7 @@ class ProfileView extends GetView<ProfileController> {
                                         color: Colors.black),
                                   ),
                                   Text(
-                                    '77%',
+                                    '100%',
                                     style: TextStyle(
                                       fontSize: 25.0,
                                       fontWeight: FontWeight.w500,
@@ -191,12 +191,13 @@ class ProfileView extends GetView<ProfileController> {
                                 Icon(
                                   Icons.email_outlined,
                                   color: Color(0xff8332A6),
-                                  size: 40,
+                                  size: 30,
                                 ),
                                 SizedBox(width: 23),
                                 Text(
                                   '${authC.user.email}',
-                                  style: TextStyle(fontSize: 18),
+                                  style: TextStyle(
+                                      fontSize: 15, color: Color(0xff8332A6)),
                                 ),
                               ],
                             ),
@@ -215,7 +216,7 @@ class ProfileView extends GetView<ProfileController> {
                                 Icon(
                                   Icons.cake,
                                   color: Color(0xff8332A6),
-                                  size: 40,
+                                  size: 30,
                                 ),
                                 SizedBox(width: 23),
                                 Text(
@@ -223,7 +224,8 @@ class ProfileView extends GetView<ProfileController> {
                                       ? DateFormat("EEE, dd MMM y")
                                           .format(authC.selectedDate!)
                                       : '--',
-                                  style: TextStyle(fontSize: 18),
+                                  style: TextStyle(
+                                      fontSize: 15, color: Color(0xff8332A6)),
                                 ),
                               ],
                             ),
@@ -244,14 +246,15 @@ class ProfileView extends GetView<ProfileController> {
                                       ? Icons.male
                                       : Icons.female,
                                   color: Color(0xff8332A6),
-                                  size: 40,
+                                  size: 30,
                                 ),
                                 SizedBox(width: 23),
                                 Text(
                                   authC.user.gender == 'male'
                                       ? 'Male'
                                       : 'Female',
-                                  style: TextStyle(fontSize: 18),
+                                  style: TextStyle(
+                                      fontSize: 15, color: Color(0xff8332A6)),
                                 ),
                               ],
                             ),
